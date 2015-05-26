@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.3.RELEASE")
+        classpath('org.springframework.build.gradle:propdeps-plugin:0.0.6')
+    }
+}
+
+group 'org.ametiste.redgreen'
+version '0.1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'propdeps'
+
+project.with {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // Spring-cloud dependencies
+    compile("org.springframework.cloud:spring-cloud-config-client:1.0.1.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-starter:1.0.1.RELEASE")
+    compile('org.springframework.cloud:spring-cloud-starter-eureka:1.0.1.RELEASE') {
+        exclude module: "servlet-api"
+    }
+
+    optional ("org.springframework.boot:spring-boot-configuration-processor")
+
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+
+    // compile("org.springframework.boot:spring-boot-starter-jdbc")
+    compile("org.springframework.boot:spring-boot-starter-jetty")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+
+    compile("com.netflix.hystrix:hystrix-javanica:1.4.9")
+
+    testCompile("junit:junit")
+
+}
