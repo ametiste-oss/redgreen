@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
  *  See {@link DirectRedgreenBundleRepositoryProperties} for properties layout details.
  * </p>
  *
+ * @see DirectRedgreenBundleRepositoryProperties
  * @since 0.1.0
  */
 @Configuration

@@ -1,28 +1,86 @@
 package org.ametiste.redgreen.data;
 
-import org.springframework.http.HttpEntity;
+import org.ametiste.redgreen.application.FailoverLine;
 import org.springframework.http.HttpMethod;
 
 /**
+ * <p>
+ *     Value object that represents a {@code request} that should be
+ *     performed through concrete resources {@code bundle}.
+ * </p>
  *
- * @since
+ * @see RedgreenBundle
+ * @see FailoverLine
+ * @since 0.1.0
  */
 public class RedgreenRequest {
 
-    private final HttpMethod httpMethod;
+    private final String targetBundle;
+
+    // TODO: I want to use plain string to provide some flexability...
+    private final HttpMethod requestMethod;
 
     private final String queryString;
 
-    public RedgreenRequest(HttpMethod httpMethod, String queryString) {
-        this.httpMethod = httpMethod;
-        this.queryString = queryString;
+    /**
+     * <p>
+     *     Constructs new {@code request} using provided parameters.
+     * </p>
+     *
+     * <p>
+     *     Note, nullable {@code queryString} will be transformed to the empty string.
+     * </p>
+     *
+     * @param targetBundle named of bundle, on which request will be performed, can't be {@code null} or empty
+     * @param requestMethod used request method, can't be {@code null} or empty
+     * @param queryString provided query string, can be null or empty
+     *
+     */
+    public RedgreenRequest(String targetBundle, HttpMethod requestMethod, String queryString) {
+
+        if (targetBundle == null || targetBundle.isEmpty()) {
+            throw new IllegalArgumentException("Request targetBundle can't be null nor empty.");
+        }
+
+        if (requestMethod == null) {
+            throw new IllegalArgumentException("Request method can't be null");
+        }
+
+        this.targetBundle = targetBundle;
+        this.requestMethod = requestMethod;
+        this.queryString = queryString == null ? "" : queryString;
     }
 
-    public HttpMethod getHttpMethod() {
-        return httpMethod;
+    /**
+     * <p>
+     *   Provides a name of {@code bundle} using which a request should be executed.
+     * </p>
+     *
+     * @return name of target {@code bundle}, can't be {@code null}.
+     */
+    public String targetBundle() {
+        return targetBundle;
     }
 
-    public String getQueryString() {
+    /**
+     * <p>
+     *  Provides request method used.
+     * </p>
+     *
+     * @return used request method, can't be {@code null}.
+     */
+    public HttpMethod requestMethod() {
+        return requestMethod;
+    }
+
+    /**
+     * <p>
+     *  Provides query string given with a request.
+     * </p>
+     *
+     * @return provided query string, can't be {@code null}.
+     */
+    public String requestQuery() {
         return queryString;
     }
 

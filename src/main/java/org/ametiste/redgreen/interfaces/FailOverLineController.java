@@ -1,6 +1,7 @@
 package org.ametiste.redgreen.interfaces;
 
 import org.ametiste.redgreen.application.FailoverLine;
+import org.ametiste.redgreen.data.RedgreenBundle;
 import org.ametiste.redgreen.data.RedgreenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -12,15 +13,39 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * <p>
+ *      This controller accepts requests and handeling its over installed {@link FailoverLine}.
+ * </p>
  *
+ * <p>
+ *      Controller serves the {@code bundle} resource that represent a set of resources that
+ *      may handle incoming request.
+ * </p>
+ *
+ * <p>
+ *     Note, only GET, OPTIONS and HEAD methods are supported by the controller,
+ *     method which could change the server state does not supported by a safety reasons.
+ * </p>
+ *
+ * @see RedgreenBundle
+ * @see RedgreenRequest
  * @since 0.1.0
  */
 @RestController
 @RequestMapping("/")
-public class RedgreenRequestsController {
+public class FailOverLineController {
 
+    /**
+     * <p>
+     *     {@code FailoverLine} that would be used to handle incoming request,
+     *     note for the version 0.1.0 is only one {@code failover line} could be
+     *     used within the entire application.
+     * </p>
+     *
+     * @since 0.1.0
+     */
     @Autowired
-    private FailoverLine simpleFailoverLine;
+    private FailoverLine failoverLine;
 
     /**
      * <p>
@@ -36,18 +61,18 @@ public class RedgreenRequestsController {
      * </p>
      *
      * @param bundleName
-     * @return
+     * @return response acquired from a one of bundeled resources
      */
     @RequestMapping(value = "/{bundleName:.+}",
         method = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.HEAD})
-    public Object performIncomingRequest(
-            @PathVariable("bundleName") String bundleName,
+    public Object performIncomingRequest(@PathVariable("bundleName") String bundleName,
             HttpServletRequest servletRequest) {
 
-        return simpleFailoverLine.performRequest(bundleName, () -> {
+        return failoverLine.performRequest(() -> {
             return new RedgreenRequest(
-                    HttpMethod.valueOf(servletRequest.getMethod()),
-                    servletRequest.getQueryString()
+                bundleName,
+                HttpMethod.valueOf(servletRequest.getMethod()),
+                servletRequest.getQueryString()
             );
         });
     }

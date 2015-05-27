@@ -4,6 +4,7 @@ import org.ametiste.redgreen.data.RedgreenBundle;
 import org.ametiste.redgreen.infrastructure.DirectRedgreenBundleRepository;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,14 +59,12 @@ public class DirectRedgreenBundleRepositoryProperties {
         return bundles;
     }
 
-    public HashMap<String, RedgreenBundle> getComposedBundles() {
+    public List<RedgreenBundle> getComposedBundles() {
 
-        final HashMap<String, RedgreenBundle> composed = new HashMap<>();
+        final List<RedgreenBundle> composed = new ArrayList<>(bundles.size());
 
-        bundles.forEach(
-                (k, v) -> {
-                    composed.put(k, new RedgreenBundle(v.get("green").get(0), v.get("red")));
-                }
+        bundles.forEach((k, v) ->
+            composed.add(new RedgreenBundle(k, v.get("green").get(0), v.get("red")))
         );
 
         return composed;

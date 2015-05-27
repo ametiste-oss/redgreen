@@ -1,6 +1,7 @@
 package org.ametiste.redgreen.application;
 
 import org.ametiste.redgreen.data.RedgreenBundle;
+import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;
 import org.ametiste.redgreen.data.RedgreenRequest;
 
 import java.util.function.Supplier;
@@ -25,12 +26,15 @@ public interface FailoverLine {
      *     Performs the request provided by a supplier using resources from the named bundle.
      * </p>
      *
-     * @param bundleName name of a bundle, which resources would be used to perofm a request
-     * @param requestSupplier object to provide {@link RedgreenRequest}
+     * @param requestSupplier {@link RedgreenRequest} supplier object
      *
      * @return response, that given by an any successfuly resource
      *
+     * @throws RedgreenBundleDoesNotExist in cases where {@code bundle} targeted by the given
+     * {@code RedgreenRequest} can't be found
+     *
      */
-    Object performRequest(String bundleName, Supplier<RedgreenRequest> requestSupplier);
+    Object performRequest(Supplier<RedgreenRequest> requestSupplier)
+            throws RedgreenBundleDoesNotExist;
 
 }
