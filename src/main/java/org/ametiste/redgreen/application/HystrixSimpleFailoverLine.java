@@ -43,14 +43,17 @@ import java.util.function.Supplier;
  *     of this implementation.
  * </p>
  *
- * <p>
- *     Command execution timeout can be modified using application
- *     property <i>redgreen.hystrix.simpleFailoverLine.commandTimeout</i> ( note, a value should be defined in millis ).
- * </p>
- *
  * @since 0.1.0
  */
 public class HystrixSimpleFailoverLine implements FailoverLine {
+
+    /**
+     * Defines {@code Hystrix} command key, this constant can be used as the reference
+     * to this line execution command.
+     *
+     * @since 0.1.0
+     */
+    public static final String HYSTRIX_COMMAND_KEY = "SimpleFailoverLineExecution";
 
     // NOTE: ResourceHttpMessageConverter used to handle all possible content-types
     private RestTemplate restTemplate = new RestTemplate(
@@ -65,12 +68,9 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
         this.bundleRepostitory = redgreenBundleRepostitory;
     }
 
-    @HystrixCommand(fallbackMethod = "performFallback",
+    @HystrixCommand(commandKey=HYSTRIX_COMMAND_KEY, fallbackMethod = "performFallback",
             commandProperties = {
-                @HystrixProperty(name="circuitBreaker.enabled",
-                        value="false"),
-                @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds",
-                        value="${redgreen.hystrix.simpleFailoverLine.commandTimeout}")
+                    @HystrixProperty(name="circuitBreaker.enabled", value="false"),
             }
     )
     @Override
@@ -96,7 +96,7 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
         return redgreenBundle.mapRedResources((r) -> doSafeResourceRequest(r, requestSupplier.get()))
                 .filter((r) -> r != null)
                 .findFirst()
-                // TODO: define specific exception
+                        // TODO: define specific exception
                 .orElseThrow(RuntimeException::new);
     }
 
