@@ -34,7 +34,7 @@ public interface FailoverLine {
      * {@code RedgreenRequest} can't be found
      *
      */
-    Object performRequest(Supplier<RedgreenRequest> requestSupplier)
+    <T> T performRequest(Supplier<RedgreenRequest> requestSupplier, Forwarder<T> forwarder)
             throws RedgreenBundleDoesNotExist;
 
 }

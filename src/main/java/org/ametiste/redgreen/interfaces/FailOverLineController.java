@@ -1,16 +1,24 @@
 package org.ametiste.redgreen.interfaces;
 
 import org.ametiste.redgreen.application.FailoverLine;
+import org.ametiste.redgreen.application.ForwardedResponse;
+import org.ametiste.redgreen.application.Forwarder;
 import org.ametiste.redgreen.data.RedgreenBundle;
 import org.ametiste.redgreen.data.RedgreenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/")
-public class FailOverLineController {
+public class FailoverLineController {
 
     /**
      * <p>
@@ -65,16 +73,28 @@ public class FailOverLineController {
      */
     @RequestMapping(value = "/{bundleName:.+}",
         method = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.HEAD})
-    public Object performIncomingRequest(@PathVariable("bundleName") String bundleName,
+    public ResponseEntity<ForwardedResponse> performIncomingRequest(@PathVariable("bundleName") String bundleName,
             HttpServletRequest servletRequest) {
 
-        return failoverLine.performRequest(() -> {
-            return new RedgreenRequest(
-                bundleName,
-                HttpMethod.valueOf(servletRequest.getMethod()),
-                servletRequest.getQueryString()
-            );
-        });
+        return failoverLine.performRequest(
+
+                () -> {
+                    return new RedgreenRequest(
+                            bundleName,
+                            HttpMethod.valueOf(servletRequest.getMethod()),
+                            servletRequest.getQueryString()
+                    );
+                },
+
+                new Forwarder<ResponseEntity<ForwardedResponse>>() {
+                    public ResponseEntity<ForwardedResponse> forward(Map<String, List<String>> headers, ForwardedResponse body) {
+                        return new ResponseEntity<ForwardedResponse>(body,
+                                new LinkedMultiValueMap<String, String>(headers), HttpStatus.OK);
+                    }
+                }
+
+        );
+
     }
 
 }
