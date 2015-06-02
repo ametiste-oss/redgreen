@@ -2,11 +2,13 @@ package org.ametiste.redgreen;
 
 import org.ametiste.redgreen.configuration.DirectRedgreenBundleRepositoryConfiguration;
 import org.ametiste.redgreen.configuration.HystrixSimpleFailoverLineConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
-import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+
+import java.lang.management.ManagementFactory;
 
 /**
  * <p>
@@ -28,8 +30,6 @@ import org.springframework.context.ApplicationContext;
  * @since 0.1.0
  */
 @SpringBootApplication
-@EnableCircuitBreaker
-@EnableHystrixDashboard
 public class RedgreenApplication {
 
     public static void main(String[] args) {
