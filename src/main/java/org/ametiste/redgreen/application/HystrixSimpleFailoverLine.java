@@ -8,17 +8,9 @@ import org.ametiste.redgreen.data.RedgreenRequest;
 import org.ametiste.redgreen.interfaces.ForwardedResponseMessageConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -61,15 +53,19 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
     public static final String HYSTRIX_COMMAND_KEY = "SimpleFailoverLineExecution";
 
     // NOTE: ResourceHttpMessageConverter used to handle all possible content-types
-    private RestTemplate restTemplate = new RestTemplate(
-            Arrays.asList(new ForwardedResponseMessageConverter())
-    );
+    // private RestTemplate restTemplate = new RestTemplate(
+    //        Arrays.asList(new ForwardedResponseMessageConverter())
+    //);
 
     private final RedgreenBundleRepostitory bundleRepostitory;
 
+    private final RequestExecutor requestExecutor;
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public HystrixSimpleFailoverLine(RedgreenBundleRepostitory redgreenBundleRepostitory) {
+    public HystrixSimpleFailoverLine(RequestExecutor requestExecutor,
+                                     RedgreenBundleRepostitory redgreenBundleRepostitory) {
+        this.requestExecutor = requestExecutor;
         this.bundleRepostitory = redgreenBundleRepostitory;
     }
 
@@ -109,19 +105,17 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
         // TODO: Need to find a way to form resourceURI+queryString pair
 
         try {
-            return forwardResource(resource + "?" + request.requestQuery(), forwarder);
+            return requestExecutor.executeRequest(
+                    request.requestMethod(),
+                    resource + "?" + request.requestQuery(),
+                    forwarder
+            );
         } catch (Exception e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Resource reading error", e);
             }
             throw e;
         }
-        /*
-        return restTemplate.exchange(resource + "?" + request.requestQuery(),
-                request.requestMethod(),
-                HttpEntity.EMPTY,
-                InputStream.class  // NOTE: ResourceHttpMessageConverter used to handle all possible content-types
-        );*/
     }
 
     private <T> T doSafeResourceRequest(String resource, RedgreenRequest request, Forwarder<T> forwarder) {
@@ -140,66 +134,6 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
         // TODO: add excpetion and existens check
         // TODO: atm repository exception triggering failover
         return bundleRepostitory.loadBundle(requestSupplier.get().targetBundle());
-    }
-
-    private <T> T forwardResource(String url, Forwarder<T> forwarder) {
-
-        final HttpURLConnection connection;
-
-        try {
-            connection = (HttpURLConnection) new URL(url).openConnection();
-        } catch (IOException e) {
-            throw new RuntimeException("Can't establish connection.");
-        }
-
-        // TODO: what will happen, if the connection never closed?
-        // I guess I need some cleanup or redesign it somehow.
-
-        try {
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-
-                // NOTE: there is first http headers, dunno why, but it should be removed, so we rebuilding map
-
-                final LinkedMultiValueMap<String, String> h =
-                        new LinkedMultiValueMap<>();
-
-                for (Map.Entry<String, List<String>> hs : connection.getHeaderFields().entrySet()) {
-                    if (hs.getKey() == null) {
-                        continue;
-                    }
-                    h.put(hs.getKey(), hs.getValue());
-                }
-
-                return forwarder.forward(h, new ForwardedResponse() {
-
-                    @Override
-                    public void close() throws IOException {
-                        connection.disconnect();
-                    }
-
-                    @Override
-                    public void forwardTo(OutputStream outputStream) {
-                        try {
-                            StreamUtils.copy(connection.getInputStream(), outputStream);
-                        } catch (IOException e) {
-                            throw new RuntimeException("Can't forward stream.", e);
-                        } finally {
-                            connection.disconnect();
-                        }
-                    }
-                });
-            } else {
-                connection.disconnect();
-                throw new RuntimeException("Response was not OK.");
-            }
-        } catch (IOException e) {
-            connection.disconnect();
-            throw new RuntimeException("Can't read URL for forward.", e);
-        } finally {
-            // NOTE: YEAH, WE DON'T DISCONNECT CONEECTION, WE NEED OPENED STREAM!
-        }
     }
 
 }

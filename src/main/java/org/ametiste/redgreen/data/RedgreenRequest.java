@@ -18,7 +18,7 @@ public class RedgreenRequest {
     private final String targetBundle;
 
     // TODO: I want to use plain string to provide some flexability...
-    private final HttpMethod requestMethod;
+    private final String requestMethod;
 
     private final String queryString;
 
@@ -36,7 +36,7 @@ public class RedgreenRequest {
      * @param queryString provided query string, can be null or empty
      *
      */
-    public RedgreenRequest(String targetBundle, HttpMethod requestMethod, String queryString) {
+    public RedgreenRequest(String targetBundle, String requestMethod, String queryString) {
 
         if (targetBundle == null || targetBundle.isEmpty()) {
             throw new IllegalArgumentException("Request targetBundle can't be null nor empty.");
@@ -69,7 +69,7 @@ public class RedgreenRequest {
      *
      * @return used request method, can't be {@code null}.
      */
-    public HttpMethod requestMethod() {
+    public String requestMethod() {
         return requestMethod;
     }
 
