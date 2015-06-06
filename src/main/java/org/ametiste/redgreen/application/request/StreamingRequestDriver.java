@@ -1,5 +1,7 @@
-package org.ametiste.redgreen.application;
+package org.ametiste.redgreen.application.request;
 
+import org.ametiste.redgreen.application.response.ForwardedResponse;
+import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StreamUtils;
 
@@ -14,42 +16,42 @@ import java.util.Map;
 /**
  * <p>
  *     High-performance request executor, this executor forwards a response
- *     body stream directly into client response.
+ *     body stream directly into client response forwarder.
  * </p>
  *
- * @since 0.1.0
+ * @since 0.1.1
  */
-public class StreamingRequestExecutor implements RequestExecutor {
+public class StreamingRequestDriver implements RequestDriver {
 
-    public final static int DEFAULT_CONNECTION_TIMEOUT = 50;
+    public final static int DEFAULT_CONNECTION_TIMEOUT = 600;
 
-    public final static int DEFAULT_READ_TIMEOUT = 300;
+    public final static int DEFAULT_READ_TIMEOUT = 500;
 
     private final int readTimeout;
 
     private final int connectionTimeoit;
 
-    public StreamingRequestExecutor(int connectionTimeoit, int readTimeout) {
+    public StreamingRequestDriver(int connectionTimeoit, int readTimeout) {
         this.readTimeout = readTimeout;
         this.connectionTimeoit = connectionTimeoit;
     }
 
-    public StreamingRequestExecutor() {
+    public StreamingRequestDriver() {
         this(DEFAULT_CONNECTION_TIMEOUT, DEFAULT_READ_TIMEOUT);
     }
 
     @Override
-    public  <T> T executeRequest(String method, String url, Forwarder<T> forwarder) {
+    public  <T> T executeStrictRequest(ResourceRequest request, RedgreenResponse<T> redgreenResponse) {
 
-        final HttpURLConnection connection = createConnection(url);
-        setupConnection(method, connection);
+        final HttpURLConnection connection =
+                request.connectResource(this::createConnection, this::setupConnection);
 
         // TODO: what will happen, if the connection never closed?
         // I guess I need some cleanup or redesign it somehow.
 
         try {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                return handleSucceccRequest(forwarder, connection);
+                return handleSuccessRequest(redgreenResponse, connection);
             } else {
                 connection.disconnect();
                 throw new RuntimeException("Response was not OK.");
@@ -62,18 +64,24 @@ public class StreamingRequestExecutor implements RequestExecutor {
         }
     }
 
-    private void setupConnection(String method, HttpURLConnection connection) {
-        try {
-            connection.setRequestMethod(method);
-        } catch (ProtocolException e) {
-            throw new IllegalArgumentException("Illegal request method: " + method);
-        }
-
-        connection.setReadTimeout(readTimeout);
-        connection.setConnectTimeout(connectionTimeoit);
+    @Override
+    // TODO: must return optional, it is possible nullable
+    public <T> T executeSafeRequest(ResourceRequest rgRequest, RedgreenResponse<T> rgResponse) {
+        return executeStrictRequest(rgRequest, rgResponse);
     }
 
-    private <T> T handleSucceccRequest(Forwarder<T> forwarder, HttpURLConnection connection) {
+    private void setupConnection(HttpURLConnection connection, ResourceRequest.Options options) {
+        try {
+            connection.setRequestMethod(options.method);
+        } catch (ProtocolException e) {
+            throw new IllegalArgumentException("Illegal request method: " + options.method);
+        }
+
+        connection.setReadTimeout(options.rTimeout);
+        connection.setConnectTimeout(options.cTimeout);
+    }
+
+    private <T> T handleSuccessRequest(RedgreenResponse<T> redgreenResponse, HttpURLConnection connection) {
         // NOTE: there is first http headers, dunno why, but it should be removed, so we rebuilding map
 
         final LinkedMultiValueMap<String, String> h =
@@ -86,7 +94,7 @@ public class StreamingRequestExecutor implements RequestExecutor {
             h.put(hs.getKey(), hs.getValue());
         }
 
-        return doStreamForward(forwarder, connection, h);
+        return doStreamForward(redgreenResponse, connection, h);
     }
 
     private HttpURLConnection createConnection(String url) {
@@ -102,7 +110,7 @@ public class StreamingRequestExecutor implements RequestExecutor {
         return connection;
     }
 
-    private <T> T doStreamForward(Forwarder<T> forwarder, final HttpURLConnection connection, LinkedMultiValueMap<String, String> h) {
+    private <T> T doStreamForward(RedgreenResponse<T> redgreenResponse, final HttpURLConnection connection, LinkedMultiValueMap<String, String> h) {
 
         final ForwardedResponse forwardedResponse = new ForwardedResponse() {
 
@@ -123,7 +131,7 @@ public class StreamingRequestExecutor implements RequestExecutor {
             }
         };
 
-        return forwarder.forward(h, forwardedResponse);
+        return redgreenResponse.forward(h, forwardedResponse);
     }
 
 }

@@ -1,19 +1,17 @@
 package org.ametiste.redgreen.infrastructure;
 
-import org.ametiste.redgreen.data.RedgreenBundle;
+import org.ametiste.redgreen.application.bundle.RedgreenBundle;
+import org.ametiste.redgreen.data.RedgreenBundleDescription;
 import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;
 import org.ametiste.redgreen.data.RedgreenBundleRepostitory;
-import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
  *      Simpliest {@link RedgreenBundleRepostitory} implementations, this repository provides access
- *      to {@link RedgreenBundle} objects that would be registering during the repository construction.
+ *      to {@link RedgreenBundleDescription} objects that would be registering during the repository construction.
  * </p>
  *
  * <p>
@@ -34,7 +32,7 @@ public class DirectRedgreenBundleRepository implements RedgreenBundleRepostitory
 
     public DirectRedgreenBundleRepository(List<RedgreenBundle> bundles) {
         bundles.forEach(
-                (b) -> this.bundles.put(b.name(), b)
+            (b) -> this.bundles.put(b.name(), b)
         );
     }
 

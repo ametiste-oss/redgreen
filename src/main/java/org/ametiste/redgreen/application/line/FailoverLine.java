@@ -1,15 +1,16 @@
-package org.ametiste.redgreen.application;
+package org.ametiste.redgreen.application.line;
 
-import org.ametiste.redgreen.data.RedgreenBundle;
+import org.ametiste.redgreen.application.bundle.RedgreenPair;
+import org.ametiste.redgreen.application.request.RequestDriver;
+import org.ametiste.redgreen.application.response.RedgreenResponse;
+import org.ametiste.redgreen.data.RedgreenBundleDescription;
 import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;
 import org.ametiste.redgreen.data.RedgreenRequest;
-
-import java.util.function.Supplier;
 
 /**
  * <p>
  *  Simple protocol that provide operations to execute a {@link RedgreenRequest}
- *  through {@link RedgreenBundle}.
+ *  through {@link RedgreenBundleDescription}.
  * </p>
  *
  * <p>
@@ -26,7 +27,7 @@ public interface FailoverLine {
      *     Performs the request provided by a supplier using resources from the named bundle.
      * </p>
      *
-     * @param requestSupplier {@link RedgreenRequest} supplier object
+     * @param rgRequest {@link RedgreenRequest} to perform
      *
      * @return response, that given by an any successfuly resource
      *
@@ -34,7 +35,8 @@ public interface FailoverLine {
      * {@code RedgreenRequest} can't be found
      *
      */
-    <T> T performRequest(Supplier<RedgreenRequest> requestSupplier, Forwarder<T> forwarder)
+    <T> T performRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair,
+                         RequestDriver requestDriver, RedgreenResponse<T> redgreenResponse)
             throws RedgreenBundleDoesNotExist;
 
 }

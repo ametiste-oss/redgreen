@@ -1,6 +1,6 @@
 package org.ametiste.redgreen.data;
 
-import org.ametiste.redgreen.data.RedgreenBundle;
+import org.ametiste.redgreen.application.bundle.RedgreenBundle;
 
 /**
  * <p>

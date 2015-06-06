@@ -1,6 +1,6 @@
 package org.ametiste.redgreen.data;
 
-import org.ametiste.redgreen.application.FailoverLine;
+import org.ametiste.redgreen.application.line.FailoverLine;
 
 import java.util.List;
 import java.util.function.Function;
@@ -41,18 +41,24 @@ import java.util.stream.Stream;
  * @see FailoverLine
  * @since 0.1.0
  */
-public class RedgreenBundle {
+public class RedgreenBundleDescription {
 
     private final String name;
+
+    private final String line;
 
     private final String greenResource;
 
     private final List<String> redResources;
 
-    public RedgreenBundle(String name, String greenResource, List<String> redResources) {
+    public RedgreenBundleDescription(String name, String line, String greenResource, List<String> redResources) {
 
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Bundle name can't be null nor empty.");
+        }
+
+        if (line == null || line.isEmpty()) {
+            throw new IllegalArgumentException("Line name can't be null nor empty.");
         }
 
         if (greenResource == null || name.isEmpty()) {
@@ -64,6 +70,7 @@ public class RedgreenBundle {
         }
 
         this.name = name;
+        this.line = line;
         this.greenResource = greenResource;
         this.redResources = redResources;
     }
@@ -102,5 +109,9 @@ public class RedgreenBundle {
      */
     public String name() {
         return name;
+    }
+
+    public String line() {
+        return line;
     }
 }

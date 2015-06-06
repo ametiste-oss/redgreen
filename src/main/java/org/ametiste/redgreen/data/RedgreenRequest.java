@@ -1,7 +1,6 @@
 package org.ametiste.redgreen.data;
 
-import org.ametiste.redgreen.application.FailoverLine;
-import org.springframework.http.HttpMethod;
+import org.ametiste.redgreen.application.line.FailoverLine;
 
 /**
  * <p>
@@ -9,7 +8,7 @@ import org.springframework.http.HttpMethod;
  *     performed through concrete resources {@code bundle}.
  * </p>
  *
- * @see RedgreenBundle
+ * @see RedgreenBundleDescription
  * @see FailoverLine
  * @since 0.1.0
  */

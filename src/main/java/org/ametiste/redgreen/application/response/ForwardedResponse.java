@@ -1,4 +1,4 @@
-package org.ametiste.redgreen.application;
+package org.ametiste.redgreen.application.response;
 
 import java.io.Closeable;
 import java.io.OutputStream;
