@@ -41,7 +41,7 @@ public class StreamingRequestDriver implements RequestDriver {
     }
 
     @Override
-    public  <T> T executeStrictRequest(ResourceRequest request, RedgreenResponse<T> redgreenResponse) {
+    public  void executeStrictRequest(ResourceRequest request, RedgreenResponse redgreenResponse) {
 
         final HttpURLConnection connection =
                 request.connectResource(this::createConnection, this::setupConnection);
@@ -51,7 +51,7 @@ public class StreamingRequestDriver implements RequestDriver {
 
         try {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                return handleSuccessRequest(redgreenResponse, connection);
+                handleSuccessRequest(redgreenResponse, connection);
             } else {
                 connection.disconnect();
                 throw new RuntimeException("Response was not OK.");
@@ -65,9 +65,8 @@ public class StreamingRequestDriver implements RequestDriver {
     }
 
     @Override
-    // TODO: must return optional, it is possible nullable
-    public <T> T executeSafeRequest(ResourceRequest rgRequest, RedgreenResponse<T> rgResponse) {
-        return executeStrictRequest(rgRequest, rgResponse);
+    public void executeSafeRequest(ResourceRequest rgRequest, RedgreenResponse rgResponse) {
+        executeStrictRequest(rgRequest, rgResponse);
     }
 
     private void setupConnection(HttpURLConnection connection, ResourceRequest.Options options) {
@@ -81,7 +80,7 @@ public class StreamingRequestDriver implements RequestDriver {
         connection.setConnectTimeout(options.cTimeout);
     }
 
-    private <T> T handleSuccessRequest(RedgreenResponse<T> redgreenResponse, HttpURLConnection connection) {
+    private void handleSuccessRequest(RedgreenResponse redgreenResponse, HttpURLConnection connection) {
         // NOTE: there is first http headers, dunno why, but it should be removed, so we rebuilding map
 
         final LinkedMultiValueMap<String, String> h =
@@ -94,7 +93,7 @@ public class StreamingRequestDriver implements RequestDriver {
             h.put(hs.getKey(), hs.getValue());
         }
 
-        return doStreamForward(redgreenResponse, connection, h);
+        doStreamForward(redgreenResponse, connection, h);
     }
 
     private HttpURLConnection createConnection(String url) {
@@ -110,7 +109,7 @@ public class StreamingRequestDriver implements RequestDriver {
         return connection;
     }
 
-    private <T> T doStreamForward(RedgreenResponse<T> redgreenResponse, final HttpURLConnection connection, LinkedMultiValueMap<String, String> h) {
+    private void doStreamForward(RedgreenResponse redgreenResponse, final HttpURLConnection connection, LinkedMultiValueMap<String, String> h) {
 
         final ForwardedResponse forwardedResponse = new ForwardedResponse() {
 
@@ -131,7 +130,7 @@ public class StreamingRequestDriver implements RequestDriver {
             }
         };
 
-        return redgreenResponse.forward(h, forwardedResponse);
+        redgreenResponse.forward(h, forwardedResponse);
     }
 
 }

@@ -9,8 +9,8 @@ import org.ametiste.redgreen.data.RedgreenRequest;
  */
 public interface RequestDriver {
 
-    <T> T executeStrictRequest(ResourceRequest rgRequest, RedgreenResponse<T> redgreenResponse);
+    void executeStrictRequest(ResourceRequest rgRequest, RedgreenResponse redgreenResponse);
 
-    <T> T executeSafeRequest(ResourceRequest rgRequest, RedgreenResponse<T> redgreenResponse);
+    void executeSafeRequest(ResourceRequest rgRequest, RedgreenResponse redgreenResponse);
 
 }

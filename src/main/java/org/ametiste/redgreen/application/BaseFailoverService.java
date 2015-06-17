@@ -28,13 +28,12 @@ public class BaseFailoverService implements FailoverService {
     }
 
     @Override
-    public <T> T performRequest(RedgreenRequest rgRequest, RedgreenResponse<T> rgResponse) throws RedgreenBundleDoesNotExist {
+    public void performRequest(RedgreenRequest rgRequest, RedgreenResponse rgResponse) throws RedgreenBundleDoesNotExist {
 
         final RedgreenBundle bundle = bundleRepostitory.loadBundle(rgRequest.targetBundle());
+        assert bundle != null;
 
-        // TODO: bundle exists check
-
-        return bundle.execute(rgRequest, rgResponse);
+        bundle.execute(rgRequest, rgResponse);
     }
 
 }

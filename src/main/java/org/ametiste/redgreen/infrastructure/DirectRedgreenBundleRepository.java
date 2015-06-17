@@ -7,6 +7,7 @@ import org.ametiste.redgreen.data.RedgreenBundleRepostitory;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -31,9 +32,10 @@ public class DirectRedgreenBundleRepository implements RedgreenBundleRepostitory
     private final HashMap<String, RedgreenBundle> bundles = new HashMap<>();
 
     public DirectRedgreenBundleRepository(List<RedgreenBundle> bundles) {
-        bundles.forEach(
-            (b) -> this.bundles.put(b.name(), b)
-        );
+        bundles.stream()
+            .forEach(
+                (b) -> this.bundles.put(b.name(), b)
+            );
     }
 
     @Override

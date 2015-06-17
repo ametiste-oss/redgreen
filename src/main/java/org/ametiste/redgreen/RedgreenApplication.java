@@ -1,14 +1,10 @@
 package org.ametiste.redgreen;
 
 import org.ametiste.redgreen.configuration.DirectRedgreenBundleRepositoryConfiguration;
-import org.ametiste.redgreen.configuration.HystrixSimpleFailoverLineConfiguration;
-import org.springframework.beans.factory.annotation.Value;
+import org.ametiste.redgreen.configuration.hystrix.HystrixSimpleFailoverLineConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-
-import java.lang.management.ManagementFactory;
 
 /**
  * <p>

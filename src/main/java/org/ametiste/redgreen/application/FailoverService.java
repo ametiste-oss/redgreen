@@ -10,7 +10,7 @@ import org.ametiste.redgreen.data.RedgreenRequest;
  */
 public interface FailoverService {
 
-    <T> T performRequest(RedgreenRequest rgRequest, RedgreenResponse<T> rgResponse)
+    void performRequest(RedgreenRequest rgRequest, RedgreenResponse rgResponse)
             throws RedgreenBundleDoesNotExist;
 
 }

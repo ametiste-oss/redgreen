@@ -4,6 +4,7 @@ import org.ametiste.redgreen.application.bundle.RedgreenBundle;
 import org.ametiste.redgreen.application.bundle.RedgreenPair;
 import org.ametiste.redgreen.application.line.AbstractFailoverLineFactory;
 import org.ametiste.redgreen.application.request.StreamingRequestDriver;
+import org.ametiste.redgreen.configuration.hystrix.HystrixSimpleFailoverLineConfiguration;
 import org.ametiste.redgreen.infrastructure.DirectRedgreenBundleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;

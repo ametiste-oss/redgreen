@@ -42,10 +42,28 @@ import java.util.Map;
 @RequestMapping("/")
 public class FailoverLineController {
 
-    static class ResponseEntityRedgreenResponse implements RedgreenResponse<ResponseEntity<ForwardedResponse>> {
-        public ResponseEntity<ForwardedResponse> forward(Map<String, List<String>> headers, ForwardedResponse body) {
-            return new ResponseEntity<ForwardedResponse>(body,
+    private static class ResponseEntityRedgreenResponse implements RedgreenResponse {
+
+        private ResponseEntity<ForwardedResponse> responseEntity;
+
+        public ResponseEntity<ForwardedResponse> takeResponse() {
+
+            if (responseEntity == null) {
+                throw new IllegalStateException("RedgreenResponse was not forwarded.");
+            }
+
+            return responseEntity;
+        }
+
+        public void forward(Map<String, List<String>> headers, ForwardedResponse body) {
+
+            if (responseEntity != null) {
+                throw new IllegalStateException("RedgreenResponse already forwarded.");
+            }
+
+            responseEntity = new ResponseEntity<ForwardedResponse>(body,
                     new LinkedMultiValueMap<String, String>(headers), HttpStatus.OK);
+
         }
     }
 
@@ -57,9 +75,7 @@ public class FailoverLineController {
      * @since 0.1.1
      */
     @Autowired
-    private FailoverService failoverLine;
-
-    private ResponseEntityRedgreenResponse rgResponse = new ResponseEntityRedgreenResponse();
+    private FailoverService failoverService;
 
     /**
      * <p>
@@ -82,13 +98,17 @@ public class FailoverLineController {
     public ResponseEntity<ForwardedResponse> performIncomingRequest(@PathVariable("bundleName") String bundleName,
                                                                     HttpServletRequest servletRequest) {
 
+        ResponseEntityRedgreenResponse rgResponse = new ResponseEntityRedgreenResponse();
+
         final RedgreenRequest rgRequest = new RedgreenRequest(
                 bundleName,
                 servletRequest.getMethod(),
                 servletRequest.getQueryString()
         );
 
-        return failoverLine.performRequest(rgRequest, rgResponse);
+        failoverService.performRequest(rgRequest, rgResponse);
+
+        return rgResponse.takeResponse();
 
     }
 

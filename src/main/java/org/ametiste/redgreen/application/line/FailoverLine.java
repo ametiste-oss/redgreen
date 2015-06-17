@@ -28,15 +28,14 @@ public interface FailoverLine {
      * </p>
      *
      * @param rgRequest {@link RedgreenRequest} to perform
-     *
-     * @return response, that given by an any successfuly resource
+     * @param rgResponse {@link RedgreenResponse} that would be used to provide response
      *
      * @throws RedgreenBundleDoesNotExist in cases where {@code bundle} targeted by the given
      * {@code RedgreenRequest} can't be found
      *
      */
-    <T> T performRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair,
-                         RequestDriver requestDriver, RedgreenResponse<T> redgreenResponse)
+    void performRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair,
+                         RequestDriver requestDriver, RedgreenResponse rgResponse)
             throws RedgreenBundleDoesNotExist;
 
 }

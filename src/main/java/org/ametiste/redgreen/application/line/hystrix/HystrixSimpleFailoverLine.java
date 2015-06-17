@@ -6,6 +6,7 @@ import org.ametiste.redgreen.application.request.ResourceRequest;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.application.request.RequestDriver;
 import org.ametiste.redgreen.application.line.FailoverLine;
+import org.ametiste.redgreen.configuration.hystrix.HystrixSimpleFailoverLineConfiguration;
 import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;
 import org.ametiste.redgreen.data.RedgreenBundleRepostitory;
 import org.ametiste.redgreen.data.RedgreenRequest;
@@ -14,31 +15,27 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- *  Failover line that uses {@link RedgreenBundleRepostitory} to lookup resources
- *  bundle.
- * </p>
- *
- * <p>
- *     This line implemented using {@code Hystrix} commands, each request line is
- *     composed by two parts - <i>command</i> and <i>fallback</i>.
+ *  This {@code line} implemented using {@code Hystrix} commands framework, each request line is
+ *  composed by two parts - <i>command</i> and <i>fallback</i>.
  * </p>
  *
  * <p>
  *  A <i>green</i> resource of a bundle would be used as target to execute <i>command</i>
- *  part of line, and if any error was accured, each <i>red</i> resource would be invoked
+ *  part of line, and if any error was occured, each <i>red</i> resource would be tried
  *  one by one as <i>failure</i> part of line.
  * </p>
  *
  * <p>
- *     Note, all <i>red</i> resources would be executed in the same {@code Hystrix Fallback Command},
- *     so the one thread/symaphore will be used.
+ *  Note, all <i>red</i> resources would be executed in the same {@code Hystrix Fallback Command},
+ *  so the one thread/symaphore will be used.
  * </p>
  *
  * <p>
- *     Note, {@code Hystrix} circuit breaker is disabled for commands used to execute methods
- *     of this implementation.
+ *  Note, {@code Hystrix} circuit breaker behaviour is controlled global for each {@code line}
+ *  instance. See {@link HystrixSimpleFailoverLineConfiguration} for details.
  * </p>
  *
+ * @see HystrixSimpleFailoverLineConfiguration
  * @since 0.1.0
  */
 public class HystrixSimpleFailoverLine implements FailoverLine {
@@ -55,15 +52,16 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
 
     @HystrixCommand(commandKey=HYSTRIX_COMMAND_KEY, fallbackMethod = "performFallback")
     @Override
-    public <T> T performRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse<T> rgResponse)
+    public void performRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse)
             throws RedgreenBundleDoesNotExist {
 
-        return requestDriver.executeStrictRequest(
+        requestDriver.executeStrictRequest(
                 createResourceRequest(rgRequest, resourcesPair, resourcesPair.getGreen()),
                 rgResponse
         );
     }
 
+    // TODO: I guess RedgreenPair should have method execute to doing this
     private ResourceRequest createResourceRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair, String green) {
         return new ResourceRequest(rgRequest,
                 green,
@@ -72,18 +70,33 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
         );
     }
 
-    public <T> T performFallback(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse<T> rgResponse) {
+    public void performFallback(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse)
+            throws RedgreenBundleDoesNotExist {
 
-        if (logger.isErrorEnabled()) {
-            logger.error("Green resource failed, performing fallback for: " + resourcesPair.getName());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Green resource failed, performing fallback for: {}", resourcesPair.getName());
         }
 
-        return resourcesPair.getRed().stream().map((r) -> requestDriver
-                .executeSafeRequest(createResourceRequest(rgRequest, resourcesPair, r), rgResponse))
-                .filter((r) -> r != null)
-                .findFirst()
-                // TODO: define specific exception
-                .orElseThrow(RuntimeException::new);
+        boolean isFailed = true;
+
+        for (String red : resourcesPair.getRed()) {
+            try {
+                requestDriver.executeStrictRequest(
+                        createResourceRequest(rgRequest, resourcesPair, red), rgResponse);
+            } catch (Exception e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Error during fallback execution.", e);
+                }
+                continue;
+            }
+            isFailed = false;
+            break;
+        }
+
+        if (isFailed) {
+            throw new RuntimeException("Resource fallback failed.");
+        }
+
     }
 
 }

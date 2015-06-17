@@ -1,4 +1,4 @@
-package org.ametiste.redgreen.configuration;
+package org.ametiste.redgreen.configuration.hystrix;
 
 import com.netflix.config.ConfigurationManager;
 import com.netflix.hystrix.HystrixThreadPoolProperties;

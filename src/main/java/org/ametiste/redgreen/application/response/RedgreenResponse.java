@@ -7,8 +7,8 @@ import java.util.Map;
  *
  * @since
  */
-public interface RedgreenResponse<T> {
+public interface RedgreenResponse {
 
-    T forward(Map<String, List<String>> headers, ForwardedResponse body);
+    void forward(Map<String, List<String>> headers, ForwardedResponse body);
 
 }

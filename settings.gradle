@@ -1,2 +1,5 @@
 rootProject.name = 'ametiste-redgreen'
+include 'ametiste-redgreen-core'
+include 'ametiste-redgreen-boot'
+include 'ametiste-redgreen-hystrix'
 
