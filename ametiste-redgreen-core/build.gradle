@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+dependencies {
+
+    compile project(":ametiste-redgreen-sdk")
+
+    compile "org.springframework:spring-webmvc:${springVersion}"
+    compile "javax.servlet:javax.servlet-api:3.1.0"
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
