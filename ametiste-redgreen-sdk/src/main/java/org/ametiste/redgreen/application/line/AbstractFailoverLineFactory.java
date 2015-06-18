@@ -13,6 +13,7 @@ import java.util.Map;
  *
  * @since 0.1.1
  */
+// TODO: move to redgreen-core module
 public class AbstractFailoverLineFactory {
 
     private final Map<String, FailoverLineFactory> failoverLineFactories;
