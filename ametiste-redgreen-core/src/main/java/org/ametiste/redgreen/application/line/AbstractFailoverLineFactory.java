@@ -8,12 +8,12 @@ import java.util.Map;
 /**
  * <p>
  *      Composite {@link FailoverLine} factory, this factory aggregates
- *      single instances of {@link FailoverLineFactory}.
+ *      single instances of {@link FailoverLineFactory} and allow create required instances
+ *      types at the runtime.
  * </p>
  *
  * @since 0.1.1
  */
-// TODO: move to redgreen-core module
 public class AbstractFailoverLineFactory {
 
     private final Map<String, FailoverLineFactory> failoverLineFactories;
