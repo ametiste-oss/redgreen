@@ -1,5 +1,7 @@
 package org.ametiste.redgreen.infrastructure;
 
+import org.ametiste.metrics.annotations.Chronable;
+import org.ametiste.metrics.annotations.Timeable;
 import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.data.RedgreenBundleDescription;
 import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;

@@ -3,13 +3,11 @@ package org.ametiste.redgreen.hystrix.line;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.ametiste.redgreen.application.RedgreenRequest;
 import org.ametiste.redgreen.application.line.FailoverLine;
+import org.ametiste.redgreen.application.process.FailoverProcess;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.bundle.RedgreenPair;
 import org.ametiste.redgreen.hystrix.configuration.HystrixSimpleFailoverLineConfiguration;
 import org.ametiste.redgreen.application.request.RequestDriver;
-import org.ametiste.redgreen.application.request.ResourceRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -18,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * </p>
  *
  * <p>
- *  A <i>green</i> resource of a bundle would be used as target to execute <i>command</i>
+ *  A <i>main</i> resource of a bundle would be used as target to execute <i>command</i>
  *  part of line, and if any error was occured, each <i>red</i> resource would be tried
  *  one by one as <i>failure</i> part of line.
  * </p>
@@ -36,6 +34,8 @@ import org.slf4j.LoggerFactory;
  * @see HystrixSimpleFailoverLineConfiguration
  * @since 0.1.0
  */
+// TODO: rewrite javadoc in way of FailoverProcess abstraction usage
+// TODO: rename to HystrixFailoverLine or HystrixJavanicaFailoverLine
 public class HystrixSimpleFailoverLine implements FailoverLine {
 
     /**
@@ -46,52 +46,29 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
      */
     public static final String HYSTRIX_COMMAND_KEY = "SimpleFailoverLineExecution";
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final FailoverProcess failoverProcess;
 
-    @HystrixCommand(commandKey=HYSTRIX_COMMAND_KEY, fallbackMethod = "performFallback")
+    public HystrixSimpleFailoverLine(FailoverProcess failoverProcess) {
+
+        if (failoverProcess == null) {
+            throw new IllegalArgumentException("Failover line requires not null failover process to execute.");
+        }
+
+        this.failoverProcess = failoverProcess;
+    }
+
     @Override
-    public void performRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse) {
-        requestDriver.executeRequest(
-                createResourceRequest(rgRequest, resourcesPair, resourcesPair.getGreen()),
-                rgResponse
-        );
+    @HystrixCommand(commandKey=HYSTRIX_COMMAND_KEY, fallbackMethod = "performFallback")
+    public void performRequest(RedgreenRequest rgRequest,
+                               RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse) {
+        failoverProcess
+                .performMain(rgRequest, resourcesPair, requestDriver, rgResponse);
     }
 
-    // TODO: I guess RedgreenPair should have method execute to doing this
-    private ResourceRequest createResourceRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair, String green) {
-        return new ResourceRequest(rgRequest,
-                green,
-                resourcesPair.getcTimeout(),
-                resourcesPair.getrTimeout()
-        );
-    }
-
-    public void performFallback(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse) {
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Green resource failed, performing fallback for: {}", resourcesPair.getName());
-        }
-
-        boolean isFailed = true;
-
-        for (String red : resourcesPair.getRed()) {
-            try {
-                requestDriver.executeRequest(
-                        createResourceRequest(rgRequest, resourcesPair, red), rgResponse);
-            } catch (Exception e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Error during fallback execution.", e);
-                }
-                continue;
-            }
-            isFailed = false;
-            break;
-        }
-
-        if (isFailed) {
-            throw new RuntimeException("Resource fallback failed.");
-        }
-
+    public void performFallback(RedgreenRequest rgRequest,
+                                RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse) {
+        failoverProcess
+                .performFallback(rgRequest, resourcesPair, requestDriver, rgResponse);
     }
 
 }

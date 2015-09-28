@@ -2,9 +2,10 @@ package org.ametiste.redgreen.hystrix.configuration;
 
 import com.netflix.config.ConfigurationManager;
 import com.netflix.hystrix.HystrixThreadPoolProperties;
+import org.ametiste.redgreen.application.process.FailoverProcess;
+import org.ametiste.redgreen.application.process.simple.SimpleFailoverProcess;
 import org.ametiste.redgreen.hystrix.line.HystrixSimpleFailoverLine;
 import org.ametiste.redgreen.hystrix.line.HystrixSimpleFailoverLineFactory;
-import org.ametiste.redgreen.application.response.ForwardedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -91,6 +92,13 @@ public class HystrixSimpleFailoverLineConfiguration {
     private int failoverPoolSize;
 
     @Bean
+    @Scope(value=ConfigurableBeanFactory.SCOPE_SINGLETON, proxyMode = ScopedProxyMode.TARGET_CLASS)
+    // TODO: I need the way to customize FailoverProcess creation process, some kind of factory required
+    public FailoverProcess hystrixFailoverProcess() {
+        return new SimpleFailoverProcess();
+    }
+
+    @Bean
     // NOTE: @Scope used to change proxyMode (for proxy that created by hystrix-javanica),
     // but we need class-based proxy to have ability to create factory that operates
     // by concrete classes instances
@@ -122,7 +130,7 @@ public class HystrixSimpleFailoverLineConfiguration {
         HystrixThreadPoolProperties.Setter()
                 .withCoreSize(threadPoolSize);
 
-        return new HystrixSimpleFailoverLine();
+        return new HystrixSimpleFailoverLine(hystrixFailoverProcess());
     }
 
     @Bean(name=LINE_FACTORY_NAME)

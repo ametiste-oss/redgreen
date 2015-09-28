@@ -1,19 +1,20 @@
 package org.ametiste.redgreen.interfaces;
 
+import org.ametiste.metrics.annotations.ErrorCountable;
+import org.ametiste.metrics.annotations.Timeable;
 import org.ametiste.redgreen.application.line.FailoverLine;
 import org.ametiste.redgreen.application.FailoverService;
 import org.ametiste.redgreen.application.response.ForwardedResponse;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.data.RedgreenBundleDescription;
 import org.ametiste.redgreen.application.RedgreenRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -77,6 +78,15 @@ public class FailoverLineController {
     @Autowired
     private FailoverService failoverService;
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @ExceptionHandler(Exception.class)
+    public void handleUnexpectedExceptions(HttpServletRequest request, Exception e) {
+        // TODO : I guess it must be replaced by ame-sns integration, only .debug level is required
+        logger.error("Request failed: {} {} {}", request.getMethod(), request.getRequestURL(), request.getQueryString());
+        logger.debug("Unexpected exception", e);
+    }
+
     /**
      * <p>
      * Note, only GET, OPTIONS and HEAD methods are supported,
@@ -95,6 +105,7 @@ public class FailoverLineController {
      */
     @RequestMapping(value = "/{bundleName:.+}",
             method = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.HEAD})
+    @Timeable(name="port.controller.failover.timing")
     public ResponseEntity<ForwardedResponse> performIncomingRequest(@PathVariable("bundleName") String bundleName,
                                                                     HttpServletRequest servletRequest) {
 

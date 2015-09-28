@@ -1,9 +1,11 @@
 package org.ametiste.redgreen.driver;
 
-import org.ametiste.redgreen.application.response.ForwardedResponse;
-import org.ametiste.redgreen.application.response.RedgreenResponse;
+import org.ametiste.metrics.annotations.ErrorCountable;
+import org.ametiste.metrics.annotations.Timeable;
 import org.ametiste.redgreen.application.request.RequestDriver;
 import org.ametiste.redgreen.application.request.ResourceRequest;
+import org.ametiste.redgreen.application.response.ForwardedResponse;
+import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StreamUtils;
 
@@ -43,7 +45,9 @@ public class StreamingRequestDriver implements RequestDriver {
     }
 
     @Override
-    public  void executeRequest(ResourceRequest request, RedgreenResponse redgreenResponse) {
+    @Timeable(name="driver.streaming-request.execute.timing")
+    @ErrorCountable(name = "driver.streaming-request.execute.general-errors")
+    public void executeRequest(ResourceRequest request, RedgreenResponse redgreenResponse) {
 
         final HttpURLConnection connection =
                 request.connectResource(this::createConnection, this::setupConnection);
