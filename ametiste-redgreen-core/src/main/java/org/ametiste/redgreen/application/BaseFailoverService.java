@@ -1,5 +1,6 @@
 package org.ametiste.redgreen.application;
 
+import org.ametiste.metrics.annotations.Timeable;
 import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;

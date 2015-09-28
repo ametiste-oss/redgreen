@@ -4,6 +4,10 @@ dependencies {
 
     compile project(":ametiste-redgreen-sdk")
 
+    // AME-OSS Metrics
+
+    compile("org.ametiste.metrics:metrics-annotations:0.1.0-2-RC")
+
     compile "org.springframework:spring-webmvc:${springVersion}"
     compile "org.slf4j:slf4j-api:1.7.12"
 

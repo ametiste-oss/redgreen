@@ -24,6 +24,10 @@ dependencies {
     compile project(":ametiste-redgreen-driver-streaming")
     compile project(":ametiste-redgreen-hystrix")
 
+    // AME-OSS Metrics
+
+    compile("org.ametiste.metrics:metrics-boot:0.1.0-2-RC")
+
     // Spring-cloud dependencies
     compile("org.springframework.cloud:spring-cloud-config-client:1.0.1.RELEASE")
     compile("org.springframework.cloud:spring-cloud-starter:1.0.1.RELEASE")
