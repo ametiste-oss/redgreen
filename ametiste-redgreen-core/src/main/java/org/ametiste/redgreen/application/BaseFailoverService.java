@@ -1,6 +1,6 @@
 package org.ametiste.redgreen.application;
 
-import org.ametiste.redgreen.bundle.RedgreenBundle;
+import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;
 import org.ametiste.redgreen.data.RedgreenBundleRepostitory;
@@ -27,7 +27,7 @@ public class BaseFailoverService implements FailoverService {
     @Override
     public void performRequest(RedgreenRequest rgRequest, RedgreenResponse rgResponse) throws RedgreenBundleDoesNotExist {
 
-        final RedgreenBundle bundle = bundleRepostitory.loadBundle(rgRequest.targetBundle());
+        final Bundle bundle = bundleRepostitory.loadBundle(rgRequest.targetBundle());
         assert bundle != null;
 
         bundle.execute(rgRequest, rgResponse);

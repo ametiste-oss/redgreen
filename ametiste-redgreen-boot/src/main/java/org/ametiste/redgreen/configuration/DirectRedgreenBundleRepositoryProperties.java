@@ -1,6 +1,7 @@
 package org.ametiste.redgreen.configuration;
 
 import org.ametiste.redgreen.application.line.AbstractFailoverLineFactory;
+import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.bundle.RedgreenBundle;
 import org.ametiste.redgreen.bundle.RedgreenPair;
 import org.ametiste.redgreen.driver.StreamingRequestDriver;
@@ -125,9 +126,9 @@ public class DirectRedgreenBundleRepositoryProperties {
         this.defaultReadTimeout = defaultReadTimeout;
     }
 
-    public List<RedgreenBundle> getComposedBundles() {
+    public List<Bundle> getComposedBundles() {
 
-        final List<RedgreenBundle> composed = new ArrayList<>(bundles.size());
+        final List<Bundle> composed = new ArrayList<>(bundles.size());
 
         bundles.forEach((k, v) -> {
 
@@ -138,7 +139,7 @@ public class DirectRedgreenBundleRepositoryProperties {
                     //  .. .bundles.NAME.connectionTimeout=..
                     //  .. .bundles.NAME.readTimeout=..
 
-                    final RedgreenBundle redgreenBundle = new RedgreenBundle(
+                    final Bundle redgreenBundle = new RedgreenBundle(
                             new RedgreenPair(k,
                                 v.get("green").get(0),
                                 v.get("red"),

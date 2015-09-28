@@ -1,5 +1,6 @@
 package org.ametiste.redgreen.data;
 
+import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.bundle.RedgreenBundle;
 
 /**
@@ -22,6 +23,6 @@ public interface RedgreenBundleRepostitory {
      * @return found {@code bundle} object, can't be {@code null}.
      * @throws RedgreenBundleDoesNotExist if the named bundle can't be found or does not exist.
      */
-    RedgreenBundle loadBundle(String bundleName) throws RedgreenBundleDoesNotExist;
+    Bundle loadBundle(String bundleName) throws RedgreenBundleDoesNotExist;
 
 }

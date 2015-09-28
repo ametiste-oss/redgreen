@@ -4,4 +4,5 @@ include 'ametiste-redgreen-boot'
 include 'ametiste-redgreen-hystrix'
 include 'ametiste-redgreen-sdk'
 include 'ametiste-redgreen-driver-streaming'
+include 'ametiste-redgreen-cache'
 

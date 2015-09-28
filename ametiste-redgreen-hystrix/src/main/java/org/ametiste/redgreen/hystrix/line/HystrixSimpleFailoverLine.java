@@ -51,8 +51,7 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
     @HystrixCommand(commandKey=HYSTRIX_COMMAND_KEY, fallbackMethod = "performFallback")
     @Override
     public void performRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse) {
-
-        requestDriver.executeStrictRequest(
+        requestDriver.executeRequest(
                 createResourceRequest(rgRequest, resourcesPair, resourcesPair.getGreen()),
                 rgResponse
         );
@@ -77,7 +76,7 @@ public class HystrixSimpleFailoverLine implements FailoverLine {
 
         for (String red : resourcesPair.getRed()) {
             try {
-                requestDriver.executeStrictRequest(
+                requestDriver.executeRequest(
                         createResourceRequest(rgRequest, resourcesPair, red), rgResponse);
             } catch (Exception e) {
                 if (logger.isDebugEnabled()) {

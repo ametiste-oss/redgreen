@@ -14,7 +14,7 @@ import org.ametiste.redgreen.application.request.RequestDriver;
  *
  * @since 0.1.1
  */
-public class RedgreenBundle {
+public class RedgreenBundle implements Bundle {
 
     private final RedgreenPair pair;
 
@@ -28,6 +28,7 @@ public class RedgreenBundle {
         this.failoverLine = failoverLine;
     }
 
+    @Override
     public String name() {
         return pair.getName();
     }
@@ -43,6 +44,7 @@ public class RedgreenBundle {
      *
      * @return
      */
+    @Override
     public void execute(RedgreenRequest request, RedgreenResponse response) {
         failoverLine.performRequest(request, pair, requestDriver, response);
     }

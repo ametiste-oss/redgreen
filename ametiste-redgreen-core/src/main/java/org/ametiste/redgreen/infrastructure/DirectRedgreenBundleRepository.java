@@ -1,6 +1,6 @@
 package org.ametiste.redgreen.infrastructure;
 
-import org.ametiste.redgreen.bundle.RedgreenBundle;
+import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.data.RedgreenBundleDescription;
 import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;
 import org.ametiste.redgreen.data.RedgreenBundleRepostitory;
@@ -28,9 +28,9 @@ import java.util.List;
  */
 public class DirectRedgreenBundleRepository implements RedgreenBundleRepostitory {
 
-    private final HashMap<String, RedgreenBundle> bundles = new HashMap<>();
+    private final HashMap<String, Bundle> bundles = new HashMap<>();
 
-    public DirectRedgreenBundleRepository(List<RedgreenBundle> bundles) {
+    public DirectRedgreenBundleRepository(List<Bundle> bundles) {
         bundles.stream()
             .forEach(
                 (b) -> this.bundles.put(b.name(), b)
@@ -38,7 +38,7 @@ public class DirectRedgreenBundleRepository implements RedgreenBundleRepostitory
     }
 
     @Override
-    public RedgreenBundle loadBundle(String bundleName) throws RedgreenBundleDoesNotExist{
+    public Bundle loadBundle(String bundleName) throws RedgreenBundleDoesNotExist{
 
         if (!bundles.containsKey(bundleName)) {
              throw new RedgreenBundleDoesNotExist(

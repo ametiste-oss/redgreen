@@ -43,7 +43,7 @@ public class StreamingRequestDriver implements RequestDriver {
     }
 
     @Override
-    public  void executeStrictRequest(ResourceRequest request, RedgreenResponse redgreenResponse) {
+    public  void executeRequest(ResourceRequest request, RedgreenResponse redgreenResponse) {
 
         final HttpURLConnection connection =
                 request.connectResource(this::createConnection, this::setupConnection);
@@ -64,11 +64,6 @@ public class StreamingRequestDriver implements RequestDriver {
         } finally {
             // NOTE: YEAH, WE DON'T DISCONNECT CONEECTION, WE NEED THE OPENED STREAM!
         }
-    }
-
-    @Override
-    public void executeSafeRequest(ResourceRequest rgRequest, RedgreenResponse rgResponse) {
-        executeStrictRequest(rgRequest, rgResponse);
     }
 
     private void setupConnection(HttpURLConnection connection, ResourceRequest.Options options) {

@@ -8,8 +8,6 @@ import org.ametiste.redgreen.application.response.RedgreenResponse;
  */
 public interface RequestDriver {
 
-    void executeStrictRequest(ResourceRequest rgRequest, RedgreenResponse redgreenResponse);
-
-    void executeSafeRequest(ResourceRequest rgRequest, RedgreenResponse redgreenResponse);
+    void executeRequest(ResourceRequest rgRequest, RedgreenResponse redgreenResponse);
 
 }
