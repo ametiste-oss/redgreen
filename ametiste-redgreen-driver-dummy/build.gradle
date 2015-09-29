@@ -1,0 +1,13 @@
+apply plugin: 'java'
+
+dependencies {
+
+    compile project(":ametiste-redgreen-sdk")
+
+    // AME-OSS Metrics
+    compile("org.ametiste.metrics:metrics-annotations:${ameMetricsVersion}")
+
+    compile("org.springframework:spring-context:${springVersion}")
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}

@@ -22,6 +22,7 @@ dependencies {
 
     compile project(":ametiste-redgreen-core")
     compile project(":ametiste-redgreen-driver-streaming")
+    compile project(":ametiste-redgreen-driver-dummy")
     compile project(":ametiste-redgreen-hystrix")
 
     // AME-OSS Metrics

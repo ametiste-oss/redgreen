@@ -5,4 +5,5 @@ include 'ametiste-redgreen-hystrix'
 include 'ametiste-redgreen-sdk'
 include 'ametiste-redgreen-driver-streaming'
 include 'ametiste-redgreen-cache'
+include 'ametiste-redgreen-driver-dummy'
 

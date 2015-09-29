@@ -5,8 +5,10 @@ import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.bundle.RedgreenBundle;
 import org.ametiste.redgreen.bundle.RedgreenPair;
 import org.ametiste.redgreen.driver.StreamingRequestDriver;
+import org.ametiste.redgreen.driver.StreamingRequestDriverFactory;
 import org.ametiste.redgreen.hystrix.configuration.HystrixSimpleFailoverLineConfiguration;
 import org.ametiste.redgreen.infrastructure.DirectRedgreenBundleRepository;
+import org.ametiste.redgreen.request.AbstractRequestDriverFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -93,12 +95,18 @@ public class DirectRedgreenBundleRepositoryProperties {
     private final static String DEFAULT_LINE =
             HystrixSimpleFailoverLineConfiguration.LINE_FACTORY_NAME;
 
+    private final static String DEFAULT_DRIVER =
+            StreamingRequestDriverFactory.DRIVER_FACTORY_NAME;
+
     private final static int DEFAULT_CONNECTION_TIMEOUT = 300;
 
     private final static int DEFAULT_READ_TIMEOUT = 1500;
 
     @Autowired
     private AbstractFailoverLineFactory failoverLineFactory;
+
+    @Autowired
+    private AbstractRequestDriverFactory requestDriverFactory;
 
     private Map<String, Map<String, List<String>>> bundles = new HashMap<>();
 
@@ -147,7 +155,7 @@ public class DirectRedgreenBundleRepositoryProperties {
                                 singleIntValue(v, "readTimeout", this::readTimeoutValue)
                             ),
                             failoverLineFactory.createFailoverLine(singleValue(v, "line", DEFAULT_LINE)),
-                            new StreamingRequestDriver()  // TODO : need to add requestDriverFactory to provide ability configure bundle driver
+                            requestDriverFactory.createRequestDriver(singleValue(v, "driver", DEFAULT_DRIVER))
                     );
 
                     composed.add(redgreenBundle);
