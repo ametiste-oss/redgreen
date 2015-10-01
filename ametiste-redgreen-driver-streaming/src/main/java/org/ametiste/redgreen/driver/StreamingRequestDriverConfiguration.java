@@ -12,7 +12,7 @@ public class StreamingRequestDriverConfiguration {
 
     // NOTE: redgreen core registering drivers using spring bean names
     @Bean(name=StreamingRequestDriverFactory.DRIVER_FACTORY_NAME)
-    public StreamingRequestDriverFactory streamingRequestDriver() {
+    public StreamingRequestDriverFactory simpleStreamDriver() {
         return new StreamingRequestDriverFactory();
     }
 
