@@ -24,7 +24,7 @@ subprojects {
     }
 
     ext {
-        ameMetricsVersion = "0.1.0-3-RC"
+        ameMetricsVersion = "0.1.0-RELEASE"
         springVersion = "4.1.6.RELEASE"
     }
 }
