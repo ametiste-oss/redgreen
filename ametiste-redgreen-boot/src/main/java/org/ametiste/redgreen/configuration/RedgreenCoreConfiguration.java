@@ -1,5 +1,6 @@
 package org.ametiste.redgreen.configuration;
 
+import org.ametiste.metrics.experimental.RequestScopedMetricsConfiguration;
 import org.ametiste.redgreen.application.BaseFailoverService;
 import org.ametiste.redgreen.application.FailoverService;
 import org.ametiste.redgreen.application.response.ForwardedResponse;
@@ -8,6 +9,7 @@ import org.ametiste.redgreen.interfaces.ForwardedResponseMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * <p>
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 0.1.1
  */
 @Configuration
+@Import(RequestScopedMetricsConfiguration.class)
 public class RedgreenCoreConfiguration {
 
     @Autowired
