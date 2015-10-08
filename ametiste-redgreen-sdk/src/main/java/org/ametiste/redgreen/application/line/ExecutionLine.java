@@ -29,8 +29,11 @@ public interface ExecutionLine {
      * @param rgRequest {@link RedgreenRequest} to perform
      * @param rgResponse {@link RedgreenResponse} that would be used to provide response
      *
+     * @throws ExecutionLineException in cases of underlaying errors through line implementation,
+     * also should be thrown line failed or can't get result of execution.
+     *
      */
     void performRequest(RedgreenRequest rgRequest, RedgreenPair resourcesPair,
-                         RequestDriver requestDriver, RedgreenResponse rgResponse);
+                         RequestDriver requestDriver, RedgreenResponse rgResponse) throws ExecutionLineException;
 
 }

@@ -5,8 +5,7 @@ import com.netflix.hystrix.HystrixThreadPoolProperties;
 import org.ametiste.redgreen.application.process.FailoverProcess;
 import org.ametiste.redgreen.application.process.simple.SimpleFailoverProcess;
 import org.ametiste.redgreen.hystrix.line.HystrixSimpleFailoverLine;
-import org.ametiste.redgreen.hystrix.line.HystrixSimpleFailoverLineFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.ametiste.redgreen.hystrix.line.HystrixSimpleExecutionLineFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -134,8 +133,8 @@ public class HystrixSimpleFailoverLineConfiguration {
     }
 
     @Bean(name=LINE_FACTORY_NAME)
-    public HystrixSimpleFailoverLineFactory hystrixSimpleFailoverLineFactory() {
-        return new HystrixSimpleFailoverLineFactory(hystrixSimpleFailoverLine());
+    public HystrixSimpleExecutionLineFactory hystrixSimpleFailoverLineFactory() {
+        return new HystrixSimpleExecutionLineFactory(hystrixSimpleFailoverLine());
     }
 
     private static final String cmdPropertyName(String propertyName) {

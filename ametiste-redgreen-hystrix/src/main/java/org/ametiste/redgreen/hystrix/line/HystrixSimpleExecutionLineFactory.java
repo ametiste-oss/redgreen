@@ -1,6 +1,6 @@
 package org.ametiste.redgreen.hystrix.line;
 
-import org.ametiste.redgreen.application.line.FailoverLineFactory;
+import org.ametiste.redgreen.application.line.ExecutionLineFactory;
 
 /**
  * <p>
@@ -11,16 +11,16 @@ import org.ametiste.redgreen.application.line.FailoverLineFactory;
  *
  * @since 0.1.1
  */
-public class HystrixSimpleFailoverLineFactory implements FailoverLineFactory {
+public class HystrixSimpleExecutionLineFactory implements ExecutionLineFactory {
 
     private final HystrixSimpleFailoverLine configuredInstance;
 
-    public HystrixSimpleFailoverLineFactory(HystrixSimpleFailoverLine configuredInstance) {
+    public HystrixSimpleExecutionLineFactory(HystrixSimpleFailoverLine configuredInstance) {
         this.configuredInstance = configuredInstance;
     }
 
     @Override
-    public HystrixSimpleFailoverLine createFailoverLine() {
+    public HystrixSimpleFailoverLine createLine() {
         return configuredInstance;
     }
 

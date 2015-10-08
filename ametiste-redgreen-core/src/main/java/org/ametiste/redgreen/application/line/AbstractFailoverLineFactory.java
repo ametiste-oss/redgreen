@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * <p>
  *      Composite {@link ExecutionLine} factory, this factory aggregates
- *      instances of {@link FailoverLineFactory} and allow to create required line
+ *      instances of {@link ExecutionLineFactory} and allow to create required line
  *      of the given type at runtime.
  * </p>
  *
@@ -17,11 +17,11 @@ import java.util.Map;
 // TODO: looks like copipaste of AbstractRequestDriverFactory, may be I need just one abstract factory of two methods?
 public class AbstractFailoverLineFactory {
 
-    private final Map<String, FailoverLineFactory> failoverLineFactories;
+    private final Map<String, ExecutionLineFactory> failoverLineFactories;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public AbstractFailoverLineFactory(Map<String, FailoverLineFactory> failoverLineFactories) {
+    public AbstractFailoverLineFactory(Map<String, ExecutionLineFactory> failoverLineFactories) {
         // TODO: null & empty checks
         this.failoverLineFactories = failoverLineFactories;
     }
@@ -39,7 +39,7 @@ public class AbstractFailoverLineFactory {
 
         return failoverLineFactories
                 .get(driverName)
-                .createFailoverLine();
+                .createLine();
     }
 
 }

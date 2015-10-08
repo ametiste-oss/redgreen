@@ -1,5 +1,7 @@
 package org.ametiste.redgreen.configuration;
 
+import org.ametiste.redgreen.CachingBundle;
+import org.ametiste.redgreen.InMemoryCacheBundle;
 import org.ametiste.redgreen.application.line.AbstractFailoverLineFactory;
 import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.bundle.RedgreenBundle;
