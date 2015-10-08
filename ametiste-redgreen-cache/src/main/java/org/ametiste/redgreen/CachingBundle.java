@@ -1,7 +1,7 @@
 package org.ametiste.redgreen;
 
 import org.ametiste.redgreen.application.RedgreenRequest;
-import org.ametiste.redgreen.application.line.ExecutionLine;
+import org.ametiste.redgreen.application.line.ExecutionLineException;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.bundle.Bundle;
 
@@ -11,27 +11,28 @@ import org.ametiste.redgreen.bundle.Bundle;
  */
 public class CachingBundle implements Bundle {
 
-    private final ExecutionLine dataLine;
+    private final Bundle dataBundle;
 
-    private final ExecutionLine cacheLine;
+    private final CacheBundle cacheBundle;
 
-    public CachingBundle(ExecutionLine dataLine, ExecutionLine cacheLine) {
-        this.dataLine = dataLine;
-        this.cacheLine = cacheLine;
+    public CachingBundle(Bundle dataBundle, CacheBundle cacheBundle) {
+        this.dataBundle = dataBundle;
+        this.cacheBundle = cacheBundle;
     }
 
     @Override
     public String name() {
-        return null;
+        return "cache-test";
     }
 
     @Override
     public void execute(RedgreenRequest request, RedgreenResponse response) {
-
-        cacheLine.performRequest(request, null, null, response);
-
-
-
+        try {
+            cacheBundle.execute(request, response);
+        } catch (RuntimeException e) {
+            dataBundle.execute(request, new CacheLineResponse(request, cacheBundle));
+            cacheBundle.execute(request, response);
+        }
     }
 
 }
