@@ -1,13 +1,12 @@
 package org.ametiste.redgreen.interfaces;
 
-import org.ametiste.metrics.annotations.ErrorCountable;
 import org.ametiste.metrics.annotations.Timeable;
-import org.ametiste.redgreen.application.line.FailoverLine;
-import org.ametiste.redgreen.application.FailoverService;
+import org.ametiste.redgreen.application.BundleExecutionService;
+import org.ametiste.redgreen.application.RedgreenRequest;
 import org.ametiste.redgreen.application.response.ForwardedResponse;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
+import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.data.RedgreenBundleDescription;
-import org.ametiste.redgreen.application.RedgreenRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 /**
  * <p>
- * This controller accepts requests and handeling its over installed {@link FailoverLine}.
+ * This controller accepts requests and handeling its over installed {@link Bundle}.
  * </p>
  * <p>
  * <p>
@@ -41,7 +40,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/")
-public class FailoverLineController {
+// TODO: add bundles list resource
+public class BundleExecutionController {
 
     private static class ResponseEntityRedgreenResponse implements RedgreenResponse {
 
@@ -70,13 +70,13 @@ public class FailoverLineController {
 
     /**
      * <p>
-     * {@code FailoverService} that would be used to handle incoming request.
+     * {@code BundleExecutionService} that would be used to handle incoming request.
      * </p>
      *
      * @since 0.1.1
      */
     @Autowired
-    private FailoverService failoverService;
+    private BundleExecutionService bundleExecutionService;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -106,8 +106,8 @@ public class FailoverLineController {
     @RequestMapping(value = "/{bundleName:.+}",
             method = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.HEAD})
     @Timeable(name="port.controller.failover.timing")
-    public ResponseEntity<ForwardedResponse> performIncomingRequest(@PathVariable("bundleName") String bundleName,
-                                                                    HttpServletRequest servletRequest) {
+    public ResponseEntity<ForwardedResponse> performBundleRequest(@PathVariable("bundleName") String bundleName,
+                                                                  HttpServletRequest servletRequest) {
 
         ResponseEntityRedgreenResponse rgResponse = new ResponseEntityRedgreenResponse();
 
@@ -117,7 +117,7 @@ public class FailoverLineController {
                 servletRequest.getQueryString()
         );
 
-        failoverService.performRequest(rgRequest, rgResponse);
+        bundleExecutionService.performRequest(rgRequest, rgResponse);
 
         return rgResponse.takeResponse();
 

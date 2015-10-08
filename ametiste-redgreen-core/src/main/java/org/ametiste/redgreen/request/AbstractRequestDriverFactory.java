@@ -1,7 +1,5 @@
 package org.ametiste.redgreen.request;
 
-import org.ametiste.redgreen.application.line.FailoverLine;
-import org.ametiste.redgreen.application.line.FailoverLineFactory;
 import org.ametiste.redgreen.application.request.RequestDriver;
 import org.ametiste.redgreen.application.request.RequestDriverFactory;
 import org.slf4j.Logger;

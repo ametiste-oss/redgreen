@@ -1,6 +1,5 @@
 package org.ametiste.redgreen.application;
 
-import org.ametiste.metrics.annotations.Chronable;
 import org.ametiste.metrics.annotations.ErrorCountable;
 import org.ametiste.metrics.annotations.Timeable;
 import org.ametiste.redgreen.bundle.Bundle;
@@ -12,18 +11,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- *     Base implementation of the {@link FailoverService}.
+ *     Base implementation of the {@link BundleExecutionService}.
  * </p>
  *
  * @since 0.1.1
  */
-public class BaseFailoverService implements FailoverService {
+public class BaseBundleExecutionService implements BundleExecutionService {
 
     private final RedgreenBundleRepostitory bundleRepostitory;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public BaseFailoverService(RedgreenBundleRepostitory bundleRepostitory) {
+    public BaseBundleExecutionService(RedgreenBundleRepostitory bundleRepostitory) {
         this.bundleRepostitory = bundleRepostitory;
     }
 

@@ -19,7 +19,7 @@ import org.ametiste.redgreen.application.request.RequestDriver;
  * @since 0.1.0
  */
 // TODO : may be rename to ExecutionLine? Object that defines how execution going?
-public interface FailoverLine {
+public interface ExecutionLine {
 
     /**
      * <p>

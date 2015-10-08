@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * <p>
- *      Composite {@link FailoverLine} factory, this factory aggregates
+ *      Composite {@link ExecutionLine} factory, this factory aggregates
  *      instances of {@link FailoverLineFactory} and allow to create required line
  *      of the given type at runtime.
  * </p>
@@ -26,7 +26,7 @@ public class AbstractFailoverLineFactory {
         this.failoverLineFactories = failoverLineFactories;
     }
 
-    public FailoverLine createFailoverLine(String driverName) {
+    public ExecutionLine createFailoverLine(String driverName) {
 
         if (!failoverLineFactories.containsKey(driverName)) {
 

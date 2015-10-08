@@ -1,6 +1,5 @@
 package org.ametiste.redgreen.hystrix.line;
 
-import org.ametiste.redgreen.application.line.FailoverLine;
 import org.ametiste.redgreen.application.line.FailoverLineFactory;
 
 /**

@@ -6,6 +6,6 @@ package org.ametiste.redgreen.application.line;
  */
 public interface FailoverLineFactory {
 
-    FailoverLine createFailoverLine();
+    ExecutionLine createFailoverLine();
 
 }

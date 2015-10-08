@@ -2,7 +2,7 @@ package org.ametiste.redgreen.hystrix.line;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.ametiste.redgreen.application.RedgreenRequest;
-import org.ametiste.redgreen.application.line.FailoverLine;
+import org.ametiste.redgreen.application.line.ExecutionLine;
 import org.ametiste.redgreen.application.process.FailoverProcess;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.bundle.RedgreenPair;
@@ -36,7 +36,7 @@ import org.ametiste.redgreen.application.request.RequestDriver;
  */
 // TODO: rewrite javadoc in way of FailoverProcess abstraction usage
 // TODO: rename to HystrixFailoverLine or HystrixJavanicaFailoverLine
-public class HystrixSimpleFailoverLine implements FailoverLine {
+public class HystrixSimpleFailoverLine implements ExecutionLine {
 
     /**
      * Defines {@code Hystrix} command key, this constant can be used as the reference

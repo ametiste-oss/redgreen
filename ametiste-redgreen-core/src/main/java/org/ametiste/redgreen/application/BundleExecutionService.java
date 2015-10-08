@@ -8,7 +8,7 @@ import org.ametiste.redgreen.data.RedgreenBundleDoesNotExist;
  *
  * @since 0.1.1
  */
-public interface FailoverService {
+public interface BundleExecutionService {
 
     void performRequest(RedgreenRequest rgRequest, RedgreenResponse rgResponse)
             throws RedgreenBundleDoesNotExist;

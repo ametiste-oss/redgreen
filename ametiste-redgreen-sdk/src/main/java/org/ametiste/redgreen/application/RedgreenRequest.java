@@ -1,6 +1,6 @@
 package org.ametiste.redgreen.application;
 
-import org.ametiste.redgreen.application.line.FailoverLine;
+import org.ametiste.redgreen.application.line.ExecutionLine;
 
 /**
  * <p>
@@ -9,7 +9,7 @@ import org.ametiste.redgreen.application.line.FailoverLine;
  * </p>
  *
  * @see RedgreenBundleDescription
- * @see FailoverLine
+ * @see ExecutionLine
  * @since 0.1.0
  */
 public class RedgreenRequest {

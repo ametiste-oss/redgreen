@@ -1,7 +1,7 @@
 package org.ametiste.redgreen.bundle;
 
 import org.ametiste.redgreen.application.RedgreenRequest;
-import org.ametiste.redgreen.application.line.FailoverLine;
+import org.ametiste.redgreen.application.line.ExecutionLine;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.application.request.RequestDriver;
 
@@ -18,14 +18,14 @@ public class RedgreenBundle implements Bundle {
 
     private final RedgreenPair pair;
 
-    private final FailoverLine failoverLine;
+    private final ExecutionLine executionLine;
 
     private final RequestDriver requestDriver;
 
-    public RedgreenBundle(RedgreenPair pair, FailoverLine failoverLine, RequestDriver requestDriver) {
+    public RedgreenBundle(RedgreenPair pair, ExecutionLine executionLine, RequestDriver requestDriver) {
         this.pair = pair;
         this.requestDriver = requestDriver;
-        this.failoverLine = failoverLine;
+        this.executionLine = executionLine;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class RedgreenBundle implements Bundle {
      */
     @Override
     public void execute(RedgreenRequest request, RedgreenResponse response) {
-        failoverLine.performRequest(request, pair, requestDriver, response);
+        executionLine.performRequest(request, pair, requestDriver, response);
     }
 
 }

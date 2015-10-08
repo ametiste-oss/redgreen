@@ -1,6 +1,6 @@
 package org.ametiste.redgreen.data;
 
-import org.ametiste.redgreen.application.line.FailoverLine;
+import org.ametiste.redgreen.application.line.ExecutionLine;
 
 import java.util.List;
 import java.util.function.Function;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  *     </pre>
  *
  *     This defintion will describe the bundle named <i>google.bundle</i>, and will contain the given
- *     <i>green</i> and <i>red</i> resources. {@link FailoverLine} implementations will use
+ *     <i>green</i> and <i>red</i> resources. {@link ExecutionLine} implementations will use
  *     these resources to try perform requests to <i>google.bundle</i>.
  * </p>
  *
@@ -38,7 +38,7 @@ import java.util.stream.Stream;
  *     to recent version of resource, or
  * </p>
  *
- * @see FailoverLine
+ * @see ExecutionLine
  * @since 0.1.0
  */
 public class RedgreenBundleDescription {

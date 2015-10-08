@@ -1,7 +1,7 @@
 package org.ametiste.redgreen;
 
 import org.ametiste.redgreen.application.RedgreenRequest;
-import org.ametiste.redgreen.application.line.FailoverLine;
+import org.ametiste.redgreen.application.line.ExecutionLine;
 import org.ametiste.redgreen.application.request.RequestDriver;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.bundle.RedgreenPair;
@@ -10,7 +10,7 @@ import org.ametiste.redgreen.bundle.RedgreenPair;
  *
  * @since
  */
-public class CachingExecuitonLine implements FailoverLine {
+public class CachingExecuitonLine implements ExecutionLine {
 
     @Override
     public void performRequest(RedgreenRequest rgRequest,
