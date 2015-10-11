@@ -1,17 +1,5 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'http://repo.spring.io/plugins-release' }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.3.RELEASE")
-        classpath('org.springframework.build.gradle:propdeps-plugin:0.0.6')
-    }
-}
-
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'propdeps'
 
 repositories {
     mavenCentral()
@@ -26,8 +14,6 @@ dependencies {
     compile('org.springframework.cloud:spring-cloud-starter-eureka:1.0.1.RELEASE') {
         exclude module: "servlet-api"
     }
-
-    optional ("org.springframework.boot:spring-boot-configuration-processor")
 
     compile("org.springframework:spring-webmvc:${springVersion}")
     compile("com.netflix.hystrix:hystrix-javanica:1.4.15")
