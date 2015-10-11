@@ -1,12 +1,10 @@
 package org.ametiste.redgreen;
 
-import org.ametiste.metrics.boot.configuration.MetricsDefaultConfiguration;
 import org.ametiste.redgreen.configuration.DirectRedgreenBundleRepositoryConfiguration;
 import org.ametiste.redgreen.hystrix.configuration.HystrixSimpleFailoverLineConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Import;
 
 /**
  * <p>

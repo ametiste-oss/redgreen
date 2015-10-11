@@ -165,6 +165,8 @@ public class DirectRedgreenBundleRepositoryProperties {
                 }
         );
 
+        // composed.add(new CachingBundle( composed.get(0), new InMemoryCacheBundle()));
+
         return composed;
     }
 

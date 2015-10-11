@@ -27,6 +27,11 @@ public class CachingBundle implements Bundle {
 
     @Override
     public void execute(RedgreenRequest request, RedgreenResponse response) {
+
+        // REWORKME : This variant would work well only for in-memory cache bundle
+        // I need to find other robust abstraction for RedgreenResponse,
+        // OutputStream soultion seems to be right only for streaming driver
+
         try {
             cacheBundle.execute(request, response);
         } catch (RuntimeException e) {
