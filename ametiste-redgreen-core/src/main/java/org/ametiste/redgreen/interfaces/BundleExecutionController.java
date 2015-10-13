@@ -124,6 +124,7 @@ public class BundleExecutionController {
 
     }
 
+    // TODO : remove me
     @RequestMapping(value = "/test-ifaces",
             method = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.HEAD})
     public String testException() {
