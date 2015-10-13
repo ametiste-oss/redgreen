@@ -31,8 +31,11 @@ dependencies {
     // AME-OSS Metrics
 
     compile("org.ametiste.metrics:metrics-boot:${ameMetricsVersion}")
-
     // compile("org.ametiste.metrics:metrics-experimental:${ameMetricsVersion}")
+
+    // AME-OSS Ifaces
+
+    compile("org.ametiste.ifaces:ifaces-restful:${ameIfacesVersion}")
 
     // Spring-cloud dependencies
     compile("org.springframework.cloud:spring-cloud-config-client:1.0.1.RELEASE")
