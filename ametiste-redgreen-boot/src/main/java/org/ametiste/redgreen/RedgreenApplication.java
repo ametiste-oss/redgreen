@@ -1,10 +1,13 @@
 package org.ametiste.redgreen;
 
+import org.ametiste.metrics.boot.configuration.MetricsCoreConfiguration;
 import org.ametiste.redgreen.configuration.DirectRedgreenBundleRepositoryConfiguration;
 import org.ametiste.redgreen.hystrix.configuration.HystrixSimpleFailoverLineConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 
 /**
  * <p>
@@ -26,6 +29,7 @@ import org.springframework.context.ApplicationContext;
  * @since 0.1.0
  */
 @SpringBootApplication
+@EnableAutoConfiguration(exclude = {MetricsCoreConfiguration.class})
 public class RedgreenApplication {
 
     public static void main(String[] args) {
