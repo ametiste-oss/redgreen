@@ -1,4 +1,4 @@
-# Indtroduction
+# Introduction
 Redgreen is simple resource-failover service designed to provide resilent and robust entrypoints.
 
 Based on [Netflix Hystrix](https://github.com/Netflix/Hystrix) library, the service may be used to 
