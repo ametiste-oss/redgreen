@@ -29,7 +29,6 @@ import org.springframework.context.annotation.Import;
  * @since 0.1.0
  */
 @SpringBootApplication
-@EnableAutoConfiguration(exclude = {MetricsCoreConfiguration.class})
 public class RedgreenApplication {
 
     public static void main(String[] args) {
