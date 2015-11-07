@@ -12,7 +12,7 @@ public class StreamingRequestDriverFactory implements RequestDriverFactory {
     public static final String DRIVER_FACTORY_NAME = "simpleStreamDriver";
 
     @Override
-    public RequestDriver createRequestDriver() {
+    public RequestDriver createComponent() {
         return new StreamingRequestDriver();
     }
 

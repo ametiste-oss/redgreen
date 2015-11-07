@@ -12,7 +12,7 @@ public class DummyRequestDriverFactory implements RequestDriverFactory {
     public static final String DRIVER_FACTORY_NAME = "dummyDriver";
 
     @Override
-    public RequestDriver createRequestDriver() {
+    public RequestDriver createComponent() {
         return new DummyDriver();
     }
 }

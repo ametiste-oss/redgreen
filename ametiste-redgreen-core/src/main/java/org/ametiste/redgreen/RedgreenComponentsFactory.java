@@ -4,6 +4,7 @@ import org.ametiste.redgreen.application.line.ExecutionLine;
 import org.ametiste.redgreen.application.line.ExecutionLineFactory;
 import org.ametiste.redgreen.application.request.RequestDriver;
 import org.ametiste.redgreen.application.request.RequestDriverFactory;
+import org.ametiste.redgreen.component.ComponentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,36 +32,30 @@ public class RedgreenComponentsFactory {
         this.driverFactories = driverFactories;
     }
 
-    public ExecutionLine createFailoverLine(String driverName) {
-
-        if (!failoverLineFactories.containsKey(driverName)) {
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("Available lines are: " + failoverLineFactories);
-            }
-
-            throw new IllegalArgumentException("Line with the given name is not registered: " + driverName);
-        }
-
-        return failoverLineFactories
-                .get(driverName)
-                .createLine();
+    public ExecutionLine createFailoverLine(String lineName) {
+        return createComponent(lineName, failoverLineFactories, ExecutionLine.class);
     }
 
     public RequestDriver createRequestDriver(String driverName) {
+        return createComponent(driverName, driverFactories, RequestDriver.class);
+    }
 
-        if (!driverFactories.containsKey(driverName)) {
+    private <T> T createComponent(String componentName,
+                                  Map<String, ? extends ComponentFactory<T>> factories,
+                                  Class<? extends  T> componentClass) {
 
+        if (!factories.containsKey(componentName)) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Available drivers are: " + driverFactories);
+                logger.debug("Available components " + componentClass + " are: " + factories);
             }
 
-            throw new IllegalArgumentException("Driver with the given name is not registered: " + driverName);
+            throw new IllegalArgumentException("Component "
+                    + componentClass +  " with the given name is not registered: " + componentName);
         }
 
-        return driverFactories
-                .get(driverName)
-                .createRequestDriver();
+        return factories
+                .get(componentName)
+                .createComponent();
     }
 
 }

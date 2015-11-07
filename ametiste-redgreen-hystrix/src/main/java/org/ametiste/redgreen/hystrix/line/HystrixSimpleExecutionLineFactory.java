@@ -20,7 +20,7 @@ public class HystrixSimpleExecutionLineFactory implements ExecutionLineFactory {
     }
 
     @Override
-    public HystrixSimpleFailoverLine createLine() {
+    public HystrixSimpleFailoverLine createComponent() {
         return configuredInstance;
     }
 

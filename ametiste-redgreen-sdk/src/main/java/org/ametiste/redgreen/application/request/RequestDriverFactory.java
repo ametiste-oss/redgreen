@@ -1,11 +1,14 @@
 package org.ametiste.redgreen.application.request;
 
+import org.ametiste.redgreen.component.ComponentFactory;
+
 /**
  *
  * @since
  */
-public interface RequestDriverFactory {
+public interface RequestDriverFactory extends ComponentFactory<RequestDriver> {
 
-    RequestDriver createRequestDriver();
+    @Override
+    RequestDriver createComponent();
 
 }
