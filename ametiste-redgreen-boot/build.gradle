@@ -36,6 +36,7 @@ dependencies {
     // AME-OSS Ifaces
 
     compile("org.ametiste.ifaces:ifaces-restful:${ameIfacesVersion}")
+    // compile("org.ametiste.scm:scm-message-sender-client-starter:${ameScmVersion}")
 
     // Spring-cloud dependencies
     compile("org.springframework.cloud:spring-cloud-config-client:1.0.1.RELEASE")
