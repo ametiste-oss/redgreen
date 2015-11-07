@@ -1,4 +1,4 @@
-package org.ametiste.redgreen.interfaces;
+package org.ametiste.redgreen.interfaces.web;
 
 import org.ametiste.metrics.annotations.Timeable;
 import org.ametiste.redgreen.application.BundleExecutionService;
@@ -98,7 +98,7 @@ public class BundleExecutionController {
      */
     @RequestMapping(value = "/{bundleName:.+}",
             method = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.HEAD})
-    @Timeable(name="port.controller.failover.timing")
+    @Timeable(name= ControllerPortMetric.FAILOVER_TIMING)
     public ResponseEntity<ForwardedResponse> performBundleRequest(@PathVariable("bundleName") String bundleName,
                                                                   HttpServletRequest servletRequest) {
 

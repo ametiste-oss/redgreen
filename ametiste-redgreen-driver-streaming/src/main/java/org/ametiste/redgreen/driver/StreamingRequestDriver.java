@@ -45,8 +45,8 @@ public class StreamingRequestDriver implements RequestDriver {
     }
 
     @Override
-    @Timeable(name="driver.streaming-request.execute.timing")
-    @ErrorCountable(name = "driver.streaming-request.execute.general-errors")
+    @Timeable(name = StreamingRequestDriverMetric.EXECUTE_TIMING)
+    @ErrorCountable(name = StreamingRequestDriverMetric.GENERAL_ERRORS_COUNT)
     public void executeRequest(ResourceRequest request, RedgreenResponse redgreenResponse) {
 
         final HttpURLConnection connection =

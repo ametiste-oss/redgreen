@@ -1,4 +1,4 @@
-package org.ametiste.redgreen.interfaces;
+package org.ametiste.redgreen.interfaces.web;
 
 import org.ametiste.metrics.annotations.Chronable;
 import org.ametiste.metrics.annotations.ErrorCountable;

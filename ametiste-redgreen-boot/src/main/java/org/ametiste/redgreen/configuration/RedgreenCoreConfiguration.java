@@ -4,7 +4,7 @@ import org.ametiste.redgreen.application.BaseBundleExecutionService;
 import org.ametiste.redgreen.application.BundleExecutionService;
 import org.ametiste.redgreen.application.response.ForwardedResponse;
 import org.ametiste.redgreen.data.RedgreenBundleRepostitory;
-import org.ametiste.redgreen.interfaces.ForwardedResponseMessageConverter;
+import org.ametiste.redgreen.interfaces.web.ForwardedResponseMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
