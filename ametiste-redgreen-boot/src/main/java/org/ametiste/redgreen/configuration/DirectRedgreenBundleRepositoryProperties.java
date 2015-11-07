@@ -1,13 +1,12 @@
 package org.ametiste.redgreen.configuration;
 
-import org.ametiste.redgreen.application.line.AbstractFailoverLineFactory;
+import org.ametiste.redgreen.RedgreenComponentsFactory;
 import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.bundle.RedgreenBundle;
 import org.ametiste.redgreen.bundle.RedgreenPair;
 import org.ametiste.redgreen.driver.StreamingRequestDriverFactory;
 import org.ametiste.redgreen.hystrix.configuration.HystrixSimpleFailoverLineConfiguration;
 import org.ametiste.redgreen.infrastructure.DirectRedgreenBundleRepository;
-import org.ametiste.redgreen.request.AbstractRequestDriverFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -102,10 +101,7 @@ public class DirectRedgreenBundleRepositoryProperties {
     private final static int DEFAULT_READ_TIMEOUT = 1500;
 
     @Autowired
-    private AbstractFailoverLineFactory failoverLineFactory;
-
-    @Autowired
-    private AbstractRequestDriverFactory requestDriverFactory;
+    private RedgreenComponentsFactory redgreenFactory;
 
     private Map<String, Map<String, List<String>>> bundles = new HashMap<>();
 
@@ -153,8 +149,8 @@ public class DirectRedgreenBundleRepositoryProperties {
                                 singleIntValue(v, "connectionTimeout", this::connectionTimeoutValue),
                                 singleIntValue(v, "readTimeout", this::readTimeoutValue)
                             ),
-                            failoverLineFactory.createFailoverLine(singleValue(v, "line", DEFAULT_LINE)),
-                            requestDriverFactory.createRequestDriver(singleValue(v, "driver", DEFAULT_DRIVER))
+                            redgreenFactory.createFailoverLine(singleValue(v, "line", DEFAULT_LINE)),
+                            redgreenFactory.createRequestDriver(singleValue(v, "driver", DEFAULT_DRIVER))
                     );
 
                     composed.add(redgreenBundle);
