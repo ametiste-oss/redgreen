@@ -80,14 +80,6 @@ public class BundleExecutionController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-//    TODO: remove it, ame-ifaces port used to handle exceptions
-//    @ExceptionHandler(Exception.class)
-//    public void handleUnexpectedExceptions(HttpServletRequest request, Exception e) {
-//        // TODO : I guess it must be replaced by ame-sns integration, only .debug level is required
-//        logger.error("Request failed: {} {} {}", request.getMethod(), request.getRequestURL(), request.getQueryString());
-//        logger.debug("Unexpected exception", e);
-//    }
-
     /**
      * <p>
      * Note, only GET, OPTIONS and HEAD methods are supported,
@@ -122,13 +114,6 @@ public class BundleExecutionController {
 
         return rgResponse.takeResponse();
 
-    }
-
-    // TODO : remove me
-    @RequestMapping(value = "/test-ifaces",
-            method = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.HEAD})
-    public String testException() {
-        throw new RuntimeException();
     }
 
 }
