@@ -1,11 +1,14 @@
 package org.ametiste.redgreen.configuration;
 
+import org.ametiste.redgreen.RedgreenComponentsFactory;
 import org.ametiste.redgreen.data.RedgreenBundleRepostitory;
 import org.ametiste.redgreen.infrastructure.DirectRedgreenBundleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.net.MalformedURLException;
 
 /**
  * <p>
@@ -26,9 +29,15 @@ public class DirectRedgreenBundleRepositoryConfiguration {
     @Autowired
     private DirectRedgreenBundleRepositoryProperties properties;
 
+    @Autowired
+    private RedgreenComponentsFactory redgreenComponentsFactory;
+
     @Bean
-    public RedgreenBundleRepostitory directRedgreenBundleRepository() {
-         return new DirectRedgreenBundleRepository(properties.getComposedBundles());
+    public RedgreenBundleRepostitory directRedgreenBundleRepository() throws MalformedURLException {
+         return new DirectRedgreenBundleRepository(
+                 properties.getComposedBundles(),
+                 properties.getComposedErrorBundle()
+         );
     }
 
 }
