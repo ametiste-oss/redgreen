@@ -3,7 +3,6 @@ package org.ametiste.redgreen.interfaces.web;
 import org.ametiste.metrics.annotations.Timeable;
 import org.ametiste.redgreen.application.BundleExecutionService;
 import org.ametiste.redgreen.application.RedgreenRequest;
-import org.ametiste.redgreen.application.response.ForwardedResponse;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.bundle.Bundle;
 import org.ametiste.redgreen.data.RedgreenBundleDescription;
@@ -16,12 +15,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 /**
  * <p>
- * This controller accepts requests and handeling its over installed {@link Bundle}.
+ * Controller accepts requests and handeling its over installed {@link Bundle}s.
  * </p>
  * <p>
  * <p>
@@ -42,31 +43,6 @@ import java.util.Map;
 @RequestMapping("/")
 // TODO: add bundles list resource
 public class BundleExecutionController {
-
-    private static class ResponseEntityRedgreenResponse implements RedgreenResponse {
-
-        private ResponseEntity<ForwardedResponse> responseEntity;
-
-        public ResponseEntity<ForwardedResponse> takeResponse() {
-
-            if (responseEntity == null) {
-                throw new IllegalStateException("RedgreenResponse was not forwarded.");
-            }
-
-            return responseEntity;
-        }
-
-        public void forward(Map<String, List<String>> headers, ForwardedResponse body) {
-
-            if (responseEntity != null) {
-                throw new IllegalStateException("RedgreenResponse already forwarded.");
-            }
-
-            responseEntity = new ResponseEntity<ForwardedResponse>(body,
-                    new LinkedMultiValueMap<String, String>(headers), HttpStatus.OK);
-
-        }
-    }
 
     /**
      * <p>
@@ -99,10 +75,11 @@ public class BundleExecutionController {
     @RequestMapping(value = "/{bundleName:.+}",
             method = {RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.HEAD})
     @Timeable(name= ControllerPortMetric.FAILOVER_TIMING)
-    public ResponseEntity<ForwardedResponse> performBundleRequest(@PathVariable("bundleName") String bundleName,
-                                                                  HttpServletRequest servletRequest) {
+    public ResponseEntity<Object> performBundleRequest(@PathVariable("bundleName") String bundleName,
+                                                                   HttpServletRequest servletRequest,
+                                                                   HttpServletResponse servletResponse) {
 
-        ResponseEntityRedgreenResponse rgResponse = new ResponseEntityRedgreenResponse();
+        RedgreenResponseEntity rgResponse = new RedgreenResponseEntity(servletResponse);
 
         final RedgreenRequest rgRequest = new RedgreenRequest(
                 bundleName,
@@ -110,10 +87,12 @@ public class BundleExecutionController {
                 servletRequest.getQueryString()
         );
 
-        bundleExecutionService.performRequest(rgRequest, rgResponse);
-
-        return rgResponse.takeResponse();
-
+        try {
+            bundleExecutionService.performRequest(rgRequest, rgResponse);
+            return rgResponse.takeResponse();
+        } catch (Exception e) {
+            rgResponse.purge();
+            throw e;
+        }
     }
-
 }

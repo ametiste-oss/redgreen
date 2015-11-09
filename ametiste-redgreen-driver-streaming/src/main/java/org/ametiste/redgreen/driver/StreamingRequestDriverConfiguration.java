@@ -10,6 +10,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class StreamingRequestDriverConfiguration {
 
+    /**
+     * <p>
+     * Bean that used by the {@code spring-webmvc} infrastructure to convert
+     * internal {@link ResponseBodyStream} objects to actual client responses.
+     * </p>
+     *
+     * @return 0.1.1
+     */
+    @Bean
+    public ResponseBodyStreamMessageConverter inputStreamMessageConverter() {
+        return new ResponseBodyStreamMessageConverter();
+    }
+
     // NOTE: redgreen core registering drivers using spring bean names
     // NOTE: method name is overrided to provide ability to use constant name
     // NOTE: via configuration

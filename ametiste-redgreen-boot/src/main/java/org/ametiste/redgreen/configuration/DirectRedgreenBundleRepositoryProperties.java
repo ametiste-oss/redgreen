@@ -1,15 +1,15 @@
 package org.ametiste.redgreen.configuration;
 
 import org.ametiste.redgreen.RedgreenComponentsFactory;
-import org.ametiste.redgreen.bundle.Bundle;
-import org.ametiste.redgreen.bundle.RedgreenBundle;
-import org.ametiste.redgreen.bundle.RedgreenPair;
+import org.ametiste.redgreen.bundle.*;
 import org.ametiste.redgreen.driver.StreamingRequestDriverFactory;
 import org.ametiste.redgreen.hystrix.configuration.HystrixSimpleFailoverLineConfiguration;
 import org.ametiste.redgreen.infrastructure.DirectRedgreenBundleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -100,6 +100,8 @@ public class DirectRedgreenBundleRepositoryProperties {
 
     private final static int DEFAULT_READ_TIMEOUT = 1500;
 
+    private final static String DEFAULT_ERROR_RESOURCE = "http://localhost/error";
+
     @Autowired
     private RedgreenComponentsFactory redgreenFactory;
 
@@ -109,8 +111,14 @@ public class DirectRedgreenBundleRepositoryProperties {
 
     private int defaultReadTimeout;
 
+    private Map<String, String> errorBundle;
+
     public Map<String, Map<String, List<String>>> getBundles() {
         return bundles;
+    }
+
+    public Map<String, String> getErrorBundle() {
+        return errorBundle;
     }
 
     public int getDefaultConnectionTimeout() {
@@ -123,6 +131,10 @@ public class DirectRedgreenBundleRepositoryProperties {
 
     public void setDefaultConnectionTimeout(int defaultConnectionTimeout) {
         this.defaultConnectionTimeout = defaultConnectionTimeout;
+    }
+
+    public void setErrorBundle(Map<String, String> errorBundle) {
+        this.errorBundle = errorBundle;
     }
 
     public void setDefaultReadTimeout(int defaultReadTimeout) {
@@ -163,6 +175,22 @@ public class DirectRedgreenBundleRepositoryProperties {
         return composed;
     }
 
+    public Bundle getComposedErrorBundle() {
+        return new RedirectingErrorResourceBundle(
+                errorBundle.getOrDefault("errorResource", DEFAULT_ERROR_RESOURCE)
+        );
+    }
+
+    // TODO: move to factory
+    public Bundle getComposedSingleErrorResourceBundle() {
+        return new SingleErrorResourceBundle(
+            errorBundle.getOrDefault("errorResource", DEFAULT_ERROR_RESOURCE),
+            redgreenFactory.createRequestDriver("simpleStreamDriver"),
+            intValue(errorBundle, "connectTimeout", this::connectionTimeoutValue),
+            intValue(errorBundle, "readTimeout", this::readTimeoutValue)
+        );
+    }
+
     private int readTimeoutValue() {
         return defaultReadTimeout == 0 ? DEFAULT_READ_TIMEOUT : defaultReadTimeout;
     }
@@ -179,6 +207,10 @@ public class DirectRedgreenBundleRepositoryProperties {
         // NOTE: yeah, I know, is unreadable :[ but it is simpliest
         // way to unify possibly multiple properties parsing
         return Integer.parseInt(map.getOrDefault(name, Arrays.asList(Integer.toString(defaultValue.get()))).get(0));
+    }
+
+    private static Integer intValue(Map<String, String> map, String name, Supplier<Integer> defaultValue) {
+        return Integer.parseInt(map.getOrDefault(name, Integer.toString(defaultValue.get())));
     }
 
 }

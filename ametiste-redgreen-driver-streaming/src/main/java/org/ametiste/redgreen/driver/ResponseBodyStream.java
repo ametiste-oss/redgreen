@@ -1,4 +1,4 @@
-package org.ametiste.redgreen.application.response;
+package org.ametiste.redgreen.driver;
 
 import java.io.Closeable;
 import java.io.OutputStream;
@@ -7,7 +7,7 @@ import java.io.OutputStream;
  *
  * @since
  */
-public interface ForwardedResponse extends Closeable {
+public interface ResponseBodyStream extends Closeable {
 
     /**
      * Note, implementation MUST close underlying response ( in any mean ),
@@ -15,6 +15,6 @@ public interface ForwardedResponse extends Closeable {
      *
      * @param outputStream stream to write response
      */
-    void forwardTo(OutputStream outputStream);
+    void writeBody(OutputStream outputStream);
 
 }

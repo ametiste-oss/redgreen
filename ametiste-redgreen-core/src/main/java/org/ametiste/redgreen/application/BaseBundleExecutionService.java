@@ -36,7 +36,20 @@ public class BaseBundleExecutionService implements BundleExecutionService {
         final Bundle bundle = bundleRepostitory.loadBundle(rgRequest.targetBundle());
         assert bundle != null;
 
-        bundle.execute(rgRequest, rgResponse);
+        logger.debug("Executing request bundle: {}", bundle.name());
+
+        try {
+            bundle.execute(rgRequest, rgResponse);
+        } catch (Exception e) {
+            logger.debug("Executing error bundle. Request bundle failed: {} ", bundle.name());
+            executeErrorBundle(rgRequest, rgResponse, e);
+            logger.debug("Error bundle execution done.");
+        }
+    }
+
+    private void executeErrorBundle(RedgreenRequest rgRequest, RedgreenResponse rgResponse, Exception e) {
+        bundleRepostitory.loadErrorBundle(rgRequest.targetBundle(), e)
+                .execute(rgRequest, rgResponse);
     }
 
 }
