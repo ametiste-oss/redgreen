@@ -35,4 +35,9 @@ public class CacheLineResponse implements RedgreenResponse {
         // cacheBundle.cacheResponse(request, body);
     }
 
+    @Override
+    public void purge() {
+
+    }
+
 }
