@@ -19,14 +19,18 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
  * @since
  */
 @Configuration
-@Import(StreamMetricsAggregatorConfiguration.class)
 public class MetricsStreamConfiguration {
+
+    @Bean
+    public MetricsService metricsService() {
+        return new MetricsStreamService(metricsStream());
+    }
 
     @Bean
     public MetricsStream metricsStream() {
         return new MetaMetricsStream(
-            new AggregatorStream(new NullMetricsAggregator()),
-            new AggregatorStream(new JmxMetricAggregator("org.ametiste.rg"))
+            new AggregatorStream(new JmxMetricAggregator("org.ametiste.meta")),
+            new AggregatorStream(new JmxMetricAggregator("org.ametiste.rg.meta"))
         );
     }
 
