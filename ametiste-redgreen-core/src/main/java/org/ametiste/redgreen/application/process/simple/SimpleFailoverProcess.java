@@ -21,9 +21,9 @@ public class SimpleFailoverProcess implements FailoverProcess {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    @Timeable(name= SimpleFailoverProcessorMetrics.MAIN_PERF_TIMING)
-    @Countable(name= SimpleFailoverProcessorMetrics.MAIN_EVENT_ATTEMPTS)
-    @ErrorCountable(name= SimpleFailoverProcessorMetrics.MAIN_EVENT_ERRORS)
+    @Timeable(name= SimpleFailoverProcessorMetric.MAIN_PERF_TIMING)
+    @Countable(name= SimpleFailoverProcessorMetric.MAIN_EVENT_ATTEMPTS)
+    @ErrorCountable(name= SimpleFailoverProcessorMetric.MAIN_EVENT_ERRORS)
     public void performMain(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse) {
         requestDriver.executeRequest(
                 createResourceRequest(rgRequest, resourcesPair, resourcesPair.getGreen()),
@@ -32,9 +32,9 @@ public class SimpleFailoverProcess implements FailoverProcess {
     }
 
     @Override
-    @Timeable(name= SimpleFailoverProcessorMetrics.FAILOVER_PERF_TIMING)
-    @Countable(name= SimpleFailoverProcessorMetrics.FAILOVER_EVENT_ATTEMPTS)
-    @ErrorCountable(name= SimpleFailoverProcessorMetrics.FAILOVER_EVENT_ERRORS)
+    @Timeable(name= SimpleFailoverProcessorMetric.FAILOVER_PERF_TIMING)
+    @Countable(name= SimpleFailoverProcessorMetric.FAILOVER_EVENT_ATTEMPTS)
+    @ErrorCountable(name= SimpleFailoverProcessorMetric.FAILOVER_EVENT_ERRORS)
     public void performFallback(RedgreenRequest rgRequest, RedgreenPair resourcesPair, RequestDriver requestDriver, RedgreenResponse rgResponse) {
 
         if (logger.isDebugEnabled()) {

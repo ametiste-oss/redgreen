@@ -9,6 +9,8 @@ dependencies {
 
     compile project(":ametiste-redgreen-core")
 
+    compile("org.ametiste:boot-ex-prog-props:${ameBootExVersion}")
+
     // Spring-cloud dependencies
     compile("org.springframework.cloud:spring-cloud-starter-hystrix-dashboard:1.0.1.RELEASE")
     compile('org.springframework.cloud:spring-cloud-starter-eureka:1.0.1.RELEASE') {

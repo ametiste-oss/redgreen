@@ -1,11 +1,7 @@
 package org.ametiste.redgreen;
 
 import org.ametiste.redgreen.application.RedgreenRequest;
-import org.ametiste.redgreen.application.response.ForwardedResponse;
-import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.ametiste.redgreen.bundle.Bundle;
-
-import java.io.OutputStream;
 
 /**
  *
@@ -13,6 +9,6 @@ import java.io.OutputStream;
  */
 public interface CacheBundle extends Bundle {
 
-    void cacheResponse(RedgreenRequest request, ForwardedResponse response);
+    // void cacheResponse(RedgreenRequest request, ResponseBodyStream response);
 
 }

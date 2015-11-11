@@ -31,12 +31,14 @@ import java.util.List;
 public class DirectRedgreenBundleRepository implements RedgreenBundleRepostitory {
 
     private final HashMap<String, Bundle> bundles = new HashMap<>();
+    private final Bundle errorBundle;
 
-    public DirectRedgreenBundleRepository(List<Bundle> bundles) {
+    public DirectRedgreenBundleRepository(List<Bundle> bundles, Bundle errorBundle) {
         bundles.stream()
             .forEach(
                 (b) -> this.bundles.put(b.name(), b)
             );
+        this.errorBundle = errorBundle;
     }
 
     @Override
@@ -49,5 +51,10 @@ public class DirectRedgreenBundleRepository implements RedgreenBundleRepostitory
 
         return bundles.get(bundleName);
 
+    }
+
+    @Override
+    public Bundle loadErrorBundle(String bundleName, Throwable e) throws RedgreenBundleDoesNotExist {
+        return errorBundle;
     }
 }

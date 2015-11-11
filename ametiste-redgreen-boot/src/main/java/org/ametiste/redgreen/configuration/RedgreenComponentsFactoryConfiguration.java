@@ -1,9 +1,8 @@
 package org.ametiste.redgreen.configuration;
 
-import org.ametiste.redgreen.application.line.AbstractFailoverLineFactory;
+import org.ametiste.redgreen.RedgreenComponentsFactory;
 import org.ametiste.redgreen.application.line.ExecutionLineFactory;
 import org.ametiste.redgreen.application.request.RequestDriverFactory;
-import org.ametiste.redgreen.request.AbstractRequestDriverFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,7 @@ import java.util.Map;
  * @since 0.1.0
  */
 @Configuration
-public class AbstractFactoriesConfiguration {
+public class RedgreenComponentsFactoryConfiguration {
 
     @Autowired
     private Map<String, ExecutionLineFactory> failoverLineFactories;
@@ -28,13 +27,8 @@ public class AbstractFactoriesConfiguration {
     private Map<String, RequestDriverFactory> requestDriverFactories;
 
     @Bean
-    public AbstractFailoverLineFactory abstractFailoverLineFactory() {
-        return new AbstractFailoverLineFactory(failoverLineFactories);
-    }
-
-    @Bean
-    public AbstractRequestDriverFactory abstractRequestDriverFactory() {
-        return new AbstractRequestDriverFactory(requestDriverFactories);
+    public RedgreenComponentsFactory redgreenComponentsFactory() {
+        return new RedgreenComponentsFactory(failoverLineFactories, requestDriverFactories);
     }
 
 }

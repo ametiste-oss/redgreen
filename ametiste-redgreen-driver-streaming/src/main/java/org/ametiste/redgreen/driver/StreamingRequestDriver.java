@@ -4,7 +4,6 @@ import org.ametiste.metrics.annotations.ErrorCountable;
 import org.ametiste.metrics.annotations.Timeable;
 import org.ametiste.redgreen.application.request.RequestDriver;
 import org.ametiste.redgreen.application.request.ResourceRequest;
-import org.ametiste.redgreen.application.response.ForwardedResponse;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StreamUtils;
@@ -35,9 +34,9 @@ public class StreamingRequestDriver implements RequestDriver {
 
     private final int connectionTimeoit;
 
-    public StreamingRequestDriver(int connectionTimeoit, int readTimeout) {
+    public StreamingRequestDriver(int connectionTimeout, int readTimeout) {
         this.readTimeout = readTimeout;
-        this.connectionTimeoit = connectionTimeoit;
+        this.connectionTimeoit = connectionTimeout;
     }
 
     public StreamingRequestDriver() {
@@ -45,15 +44,26 @@ public class StreamingRequestDriver implements RequestDriver {
     }
 
     @Override
-    @Timeable(name="driver.streaming-request.execute.timing")
-    @ErrorCountable(name = "driver.streaming-request.execute.general-errors")
+    @Timeable(name = StreamingRequestDriverMetric.EXECUTE_TIMING)
+    @ErrorCountable(name = StreamingRequestDriverMetric.GENERAL_ERRORS_COUNT)
     public void executeRequest(ResourceRequest request, RedgreenResponse redgreenResponse) {
 
         final HttpURLConnection connection =
                 request.connectResource(this::createConnection, this::setupConnection);
 
+        //
         // TODO: what will happen, if the connection never closed?
         // I guess I need some cleanup or redesign it somehow.
+        //
+        // UPD 09.11.15:
+        // Atm, purge() method for response added, now redgreen response clients
+        // should invoke purge() method in case of errors.
+        //
+        // So, if ResponseBodyStream was attached to RedgreenResponse, it should be notified
+        // about errors and purged.
+        //
+        // It should help to solve potential problems, but I still need to work on design.
+        //
 
         try {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -62,15 +72,16 @@ public class StreamingRequestDriver implements RequestDriver {
                 connection.disconnect();
                 throw new RuntimeException("Response was not OK.");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             connection.disconnect();
-            throw new RuntimeException("Can't read URL for forward.", e);
+            throw new RuntimeException("Can't read URL.", e);
         } finally {
-            // NOTE: YEAH, WE DON'T DISCONNECT CONEECTION, WE NEED THE OPENED STREAM!
+            // NOTE: YEAH, WE DON'T DISCONNECT CONNECTION, WE NEED THE OPENED STREAM!
         }
     }
 
     private void setupConnection(HttpURLConnection connection, ResourceRequest.Options options) {
+
         try {
             connection.setRequestMethod(options.method);
         } catch (ProtocolException e) {
@@ -82,19 +93,22 @@ public class StreamingRequestDriver implements RequestDriver {
     }
 
     private void handleSuccessRequest(RedgreenResponse redgreenResponse, HttpURLConnection connection) {
-        // NOTE: there is first http headers, dunno why, but it should be removed, so we rebuilding map
+        redgreenResponse.attachHeaders(collectResponseHeaders(connection));
+        redgreenResponse.attachBody(buildBodyStream(connection));
+    }
 
-        final LinkedMultiValueMap<String, String> h =
+    private LinkedMultiValueMap<String, String> collectResponseHeaders(HttpURLConnection connection) {
+        final LinkedMultiValueMap<String, String> headers =
                 new LinkedMultiValueMap<>();
 
         for (Map.Entry<String, List<String>> hs : connection.getHeaderFields().entrySet()) {
+            // NOTE: there is first http headers, dunno why, but it should be removed, so we rebuilding map
             if (hs.getKey() == null) {
                 continue;
             }
-            h.put(hs.getKey(), hs.getValue());
+            headers.put(hs.getKey(), hs.getValue());
         }
-
-        doStreamForward(redgreenResponse, connection, h);
+        return headers;
     }
 
     private HttpURLConnection createConnection(String url) {
@@ -110,9 +124,8 @@ public class StreamingRequestDriver implements RequestDriver {
         return connection;
     }
 
-    private void doStreamForward(RedgreenResponse redgreenResponse, final HttpURLConnection connection, LinkedMultiValueMap<String, String> h) {
-
-        final ForwardedResponse forwardedResponse = new ForwardedResponse() {
+    private ResponseBodyStream buildBodyStream(final HttpURLConnection connection) {
+        return new ResponseBodyStream() {
 
             @Override
             public void close() throws IOException {
@@ -120,7 +133,7 @@ public class StreamingRequestDriver implements RequestDriver {
             }
 
             @Override
-            public void forwardTo(OutputStream outputStream) {
+            public void writeBody(OutputStream outputStream) {
                 try {
                     StreamUtils.copy(connection.getInputStream(), outputStream);
                 } catch (IOException e) {
@@ -130,8 +143,6 @@ public class StreamingRequestDriver implements RequestDriver {
                 }
             }
         };
-
-        redgreenResponse.forward(h, forwardedResponse);
     }
 
 }

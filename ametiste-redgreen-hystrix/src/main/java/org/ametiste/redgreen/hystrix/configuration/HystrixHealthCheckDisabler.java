@@ -1,5 +1,6 @@
 package org.ametiste.redgreen.hystrix.configuration;
 
+import org.ametiste.bootex.progprops.ApplicationPropertiesConfiguration;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -18,17 +19,18 @@ import java.util.Properties;
  *     of opened circuits, this check is not applicable within the current redgreen implementation.
  * </p>
  *
+ * <p>
+ *     Note, since it is application startup listener, META-INF/spring.factories is used to
+ *     provide link to this configuration to application bootstrap.
+ * </p>
+ *
  * @since 0.4.0
  */
-public class HystrixHealthCheckDisabler implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
+public class HystrixHealthCheckDisabler extends ApplicationPropertiesConfiguration {
 
     @Override
-    public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-        final ConfigurableEnvironment environment = event.getEnvironment();
-        Properties properties = new Properties();
-        properties.put("health.hystrix.enabled", "false");
-        environment.getPropertySources().addFirst(
-                new PropertiesPropertySource("redgreen-hystrix-properties", properties));
+    protected void configureProperties() {
+        defProperty("health.hystrix.enabled", "false");
     }
 
 }

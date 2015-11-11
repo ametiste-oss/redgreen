@@ -9,7 +9,7 @@ subprojects {
 
     group 'org.ametiste.redgreen'
 
-    version '0.3.0-SNAPSHOT'
+    version '0.5.0-SNAPSHOT'
 
     repositories {
         mavenLocal()
@@ -24,8 +24,10 @@ subprojects {
     }
 
     ext {
-        ameMetricsVersion = "0.2.0-4-SNAPSHOT"
-        ameIfacesVersion = "0.1.1-RC"
+        ameMetricsVersion = "0.2.0-M1"
+        ameBootExVersion = "0.1.1-RELEASE"
+        ameIfacesVersion = "0.1.1-RELEASE"
+        ameScmVersion = "0.1.0-SNAPSHOT"
         springVersion = "4.1.6.RELEASE"
     }
 }

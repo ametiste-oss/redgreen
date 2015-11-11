@@ -4,7 +4,7 @@ package org.ametiste.redgreen.application.process.simple;
  *
  * @since 0.3.0
  */
-public interface SimpleFailoverProcessorMetrics {
+public interface SimpleFailoverProcessorMetric {
 
     String LINE_NAME = "processor.simple-failover";
 

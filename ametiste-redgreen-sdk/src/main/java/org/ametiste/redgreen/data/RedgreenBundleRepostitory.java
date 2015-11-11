@@ -25,4 +25,6 @@ public interface RedgreenBundleRepostitory {
      */
     Bundle loadBundle(String bundleName) throws RedgreenBundleDoesNotExist;
 
+    Bundle loadErrorBundle(String bundleName, Throwable e) throws RedgreenBundleDoesNotExist;
+
 }

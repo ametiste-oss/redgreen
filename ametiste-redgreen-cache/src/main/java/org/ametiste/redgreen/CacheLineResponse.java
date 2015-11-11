@@ -1,11 +1,8 @@
 package org.ametiste.redgreen;
 
 import org.ametiste.redgreen.application.RedgreenRequest;
-import org.ametiste.redgreen.application.response.ForwardedResponse;
 import org.ametiste.redgreen.application.response.RedgreenResponse;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +21,23 @@ public class CacheLineResponse implements RedgreenResponse {
     }
 
     @Override
-    public void forward(Map<String, List<String>> headers, ForwardedResponse body) {
-        cacheBundle.cacheResponse(request, body);
+    public void sendRedirect(String redirect) {
+
+    }
+
+    @Override
+    public void attachHeaders(Map headers) {
+
+    }
+
+    @Override
+    public void attachBody(Object body) {
+        // cacheBundle.cacheResponse(request, body);
+    }
+
+    @Override
+    public void purge() {
+
     }
 
 }
