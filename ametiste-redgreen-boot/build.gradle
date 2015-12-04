@@ -30,8 +30,7 @@ dependencies {
 
     // AME-OSS Metrics
 
-    // NOTE: disabled to exclude auto-configured services, to check Stream implementaton
-    compile("org.ametiste.metrics:metrics-boot:${ameMetricsVersion}")
+    compile("org.ametiste.metrics:metrics-default-starter:${ameMetricsVersion}")
     compile("org.ametiste.metrics:metrics-experimental:${ameMetricsVersion}")
 
     // AME-OSS Ifaces
