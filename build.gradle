@@ -24,7 +24,7 @@ subprojects {
     }
 
     ext {
-        ameMetricsVersion = "0.2.0-M1"
+        ameMetricsVersion = "0.2.0-RC"
         ameBootExVersion = "0.1.1-RELEASE"
         ameIfacesVersion = "0.1.1-RELEASE"
         ameScmVersion = "0.1.0-SNAPSHOT"

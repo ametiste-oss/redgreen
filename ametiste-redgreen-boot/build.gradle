@@ -30,7 +30,7 @@ dependencies {
 
     // AME-OSS Metrics
 
-    compile("org.ametiste.metrics:metrics-boot:${ameMetricsVersion}")
+    compile("org.ametiste.metrics:metrics-default-starter:${ameMetricsVersion}")
     // compile("org.ametiste.metrics:metrics-experimental:${ameMetricsVersion}")
 
     // AME-OSS Ifaces
